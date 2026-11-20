@@ -162,7 +162,8 @@ export const PaymentMethod: {
   BTC: 'BTC',
   ETH: 'ETH',
   SOL: 'SOL',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  PAYSTACK: 'PAYSTACK'
 };
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
@@ -11313,6 +11314,7 @@ export namespace Prisma {
     walletAddressId: string | null
     amount: number | null
     method: $Enums.PaymentMethod | null
+    reference: string | null
     proofImageUrl: string | null
     txHash: string | null
     status: $Enums.DepositStatus | null
@@ -11329,6 +11331,7 @@ export namespace Prisma {
     walletAddressId: string | null
     amount: number | null
     method: $Enums.PaymentMethod | null
+    reference: string | null
     proofImageUrl: string | null
     txHash: string | null
     status: $Enums.DepositStatus | null
@@ -11345,6 +11348,7 @@ export namespace Prisma {
     walletAddressId: number
     amount: number
     method: number
+    reference: number
     proofImageUrl: number
     txHash: number
     status: number
@@ -11371,6 +11375,7 @@ export namespace Prisma {
     walletAddressId?: true
     amount?: true
     method?: true
+    reference?: true
     proofImageUrl?: true
     txHash?: true
     status?: true
@@ -11387,6 +11392,7 @@ export namespace Prisma {
     walletAddressId?: true
     amount?: true
     method?: true
+    reference?: true
     proofImageUrl?: true
     txHash?: true
     status?: true
@@ -11403,6 +11409,7 @@ export namespace Prisma {
     walletAddressId?: true
     amount?: true
     method?: true
+    reference?: true
     proofImageUrl?: true
     txHash?: true
     status?: true
@@ -11506,6 +11513,7 @@ export namespace Prisma {
     walletAddressId: string | null
     amount: number
     method: $Enums.PaymentMethod
+    reference: string | null
     proofImageUrl: string | null
     txHash: string | null
     status: $Enums.DepositStatus
@@ -11541,6 +11549,7 @@ export namespace Prisma {
     walletAddressId?: boolean
     amount?: boolean
     method?: boolean
+    reference?: boolean
     proofImageUrl?: boolean
     txHash?: boolean
     status?: boolean
@@ -11559,6 +11568,7 @@ export namespace Prisma {
     walletAddressId?: boolean
     amount?: boolean
     method?: boolean
+    reference?: boolean
     proofImageUrl?: boolean
     txHash?: boolean
     status?: boolean
@@ -11577,6 +11587,7 @@ export namespace Prisma {
     walletAddressId?: boolean
     amount?: boolean
     method?: boolean
+    reference?: boolean
     proofImageUrl?: boolean
     txHash?: boolean
     status?: boolean
@@ -11595,6 +11606,7 @@ export namespace Prisma {
     walletAddressId?: boolean
     amount?: boolean
     method?: boolean
+    reference?: boolean
     proofImageUrl?: boolean
     txHash?: boolean
     status?: boolean
@@ -11605,7 +11617,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type DepositOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "walletAddressId" | "amount" | "method" | "proofImageUrl" | "txHash" | "status" | "adminNote" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["deposit"]>
+  export type DepositOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "walletAddressId" | "amount" | "method" | "reference" | "proofImageUrl" | "txHash" | "status" | "adminNote" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["deposit"]>
   export type DepositInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     walletAddress?: boolean | Deposit$walletAddressArgs<ExtArgs>
@@ -11631,6 +11643,7 @@ export namespace Prisma {
       walletAddressId: string | null
       amount: number
       method: $Enums.PaymentMethod
+      reference: string | null
       proofImageUrl: string | null
       txHash: string | null
       status: $Enums.DepositStatus
@@ -12069,6 +12082,7 @@ export namespace Prisma {
     readonly walletAddressId: FieldRef<"Deposit", 'String'>
     readonly amount: FieldRef<"Deposit", 'Int'>
     readonly method: FieldRef<"Deposit", 'PaymentMethod'>
+    readonly reference: FieldRef<"Deposit", 'String'>
     readonly proofImageUrl: FieldRef<"Deposit", 'String'>
     readonly txHash: FieldRef<"Deposit", 'String'>
     readonly status: FieldRef<"Deposit", 'DepositStatus'>
@@ -21727,6 +21741,7 @@ export namespace Prisma {
     walletAddressId: 'walletAddressId',
     amount: 'amount',
     method: 'method',
+    reference: 'reference',
     proofImageUrl: 'proofImageUrl',
     txHash: 'txHash',
     status: 'status',
@@ -22826,6 +22841,7 @@ export namespace Prisma {
     walletAddressId?: StringNullableFilter<"Deposit"> | string | null
     amount?: IntFilter<"Deposit"> | number
     method?: EnumPaymentMethodFilter<"Deposit"> | $Enums.PaymentMethod
+    reference?: StringNullableFilter<"Deposit"> | string | null
     proofImageUrl?: StringNullableFilter<"Deposit"> | string | null
     txHash?: StringNullableFilter<"Deposit"> | string | null
     status?: EnumDepositStatusFilter<"Deposit"> | $Enums.DepositStatus
@@ -22844,6 +22860,7 @@ export namespace Prisma {
     walletAddressId?: SortOrderInput | SortOrder
     amount?: SortOrder
     method?: SortOrder
+    reference?: SortOrderInput | SortOrder
     proofImageUrl?: SortOrderInput | SortOrder
     txHash?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -22858,6 +22875,7 @@ export namespace Prisma {
 
   export type DepositWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    reference?: string
     AND?: DepositWhereInput | DepositWhereInput[]
     OR?: DepositWhereInput[]
     NOT?: DepositWhereInput | DepositWhereInput[]
@@ -22875,7 +22893,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Deposit"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     walletAddress?: XOR<WalletAddressNullableScalarRelationFilter, WalletAddressWhereInput> | null
-  }, "id">
+  }, "id" | "reference">
 
   export type DepositOrderByWithAggregationInput = {
     id?: SortOrder
@@ -22883,6 +22901,7 @@ export namespace Prisma {
     walletAddressId?: SortOrderInput | SortOrder
     amount?: SortOrder
     method?: SortOrder
+    reference?: SortOrderInput | SortOrder
     proofImageUrl?: SortOrderInput | SortOrder
     txHash?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -22907,6 +22926,7 @@ export namespace Prisma {
     walletAddressId?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
     amount?: IntWithAggregatesFilter<"Deposit"> | number
     method?: EnumPaymentMethodWithAggregatesFilter<"Deposit"> | $Enums.PaymentMethod
+    reference?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
     proofImageUrl?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
     txHash?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
     status?: EnumDepositStatusWithAggregatesFilter<"Deposit"> | $Enums.DepositStatus
@@ -24350,6 +24370,7 @@ export namespace Prisma {
     id?: string
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -24368,6 +24389,7 @@ export namespace Prisma {
     walletAddressId?: string | null
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -24382,6 +24404,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -24400,6 +24423,7 @@ export namespace Prisma {
     walletAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -24416,6 +24440,7 @@ export namespace Prisma {
     walletAddressId?: string | null
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -24430,6 +24455,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -24446,6 +24472,7 @@ export namespace Prisma {
     walletAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -25986,6 +26013,7 @@ export namespace Prisma {
     walletAddressId?: SortOrder
     amount?: SortOrder
     method?: SortOrder
+    reference?: SortOrder
     proofImageUrl?: SortOrder
     txHash?: SortOrder
     status?: SortOrder
@@ -26006,6 +26034,7 @@ export namespace Prisma {
     walletAddressId?: SortOrder
     amount?: SortOrder
     method?: SortOrder
+    reference?: SortOrder
     proofImageUrl?: SortOrder
     txHash?: SortOrder
     status?: SortOrder
@@ -26022,6 +26051,7 @@ export namespace Prisma {
     walletAddressId?: SortOrder
     amount?: SortOrder
     method?: SortOrder
+    reference?: SortOrder
     proofImageUrl?: SortOrder
     txHash?: SortOrder
     status?: SortOrder
@@ -28326,6 +28356,7 @@ export namespace Prisma {
     id?: string
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -28342,6 +28373,7 @@ export namespace Prisma {
     walletAddressId?: string | null
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -28948,6 +28980,7 @@ export namespace Prisma {
     walletAddressId?: StringNullableFilter<"Deposit"> | string | null
     amount?: IntFilter<"Deposit"> | number
     method?: EnumPaymentMethodFilter<"Deposit"> | $Enums.PaymentMethod
+    reference?: StringNullableFilter<"Deposit"> | string | null
     proofImageUrl?: StringNullableFilter<"Deposit"> | string | null
     txHash?: StringNullableFilter<"Deposit"> | string | null
     status?: EnumDepositStatusFilter<"Deposit"> | $Enums.DepositStatus
@@ -30151,6 +30184,7 @@ export namespace Prisma {
     id?: string
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -30167,6 +30201,7 @@ export namespace Prisma {
     userId: string
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -32373,6 +32408,7 @@ export namespace Prisma {
     walletAddressId?: string | null
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -32732,6 +32768,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -32748,6 +32785,7 @@ export namespace Prisma {
     walletAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -32763,6 +32801,7 @@ export namespace Prisma {
     walletAddressId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -33134,6 +33173,7 @@ export namespace Prisma {
     userId: string
     amount: number
     method: $Enums.PaymentMethod
+    reference?: string | null
     proofImageUrl?: string | null
     txHash?: string | null
     status?: $Enums.DepositStatus
@@ -33148,6 +33188,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -33164,6 +33205,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
@@ -33179,6 +33221,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
     proofImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     txHash?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus

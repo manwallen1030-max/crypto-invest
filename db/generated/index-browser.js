@@ -233,6 +233,7 @@ exports.Prisma.DepositScalarFieldEnum = {
   walletAddressId: 'walletAddressId',
   amount: 'amount',
   method: 'method',
+  reference: 'reference',
   proofImageUrl: 'proofImageUrl',
   txHash: 'txHash',
   status: 'status',
@@ -399,7 +400,8 @@ exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   BTC: 'BTC',
   ETH: 'ETH',
   SOL: 'SOL',
-  BANK_TRANSFER: 'BANK_TRANSFER'
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  PAYSTACK: 'PAYSTACK'
 };
 
 exports.DepositStatus = exports.$Enums.DepositStatus = {

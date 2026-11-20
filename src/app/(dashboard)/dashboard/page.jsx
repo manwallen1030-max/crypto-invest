@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
-
+import { refreshUser } from '@/lib/refreshUser';
 const statCards = [
   {
     label:  'Total Balance',
@@ -50,18 +50,32 @@ export default function DashboardPage() {
     totalDeposited: 0, totalProfit: 0,
   });
 
-  useEffect(() => {
-    const stored = localStorage.getItem('vaultex_user');
-    if (stored) {
-      const u = JSON.parse(stored);
+   useEffect(() => {
+    const apply = (u) => {
       setUser(u);
-      setStats({
+      setStats((prev) => ({
         balance:        u.balance || 0,
-        investments:    0,
+        investments:    u.activeInvestments ?? prev.investments,
         totalDeposited: u.totalDeposited || 0,
         totalProfit:    u.totalProfit || 0,
-      });
-    }
+      }));
+    };
+
+    // Show the copy saved at login straight away…
+    try {
+      const stored = localStorage.getItem('vaultex_user');
+      if (stored) apply(JSON.parse(stored));
+    } catch {}
+
+    // …then replace it with the real numbers from the server, now and
+    // whenever the user comes back to this tab.
+    const sync = async () => {
+      const fresh = await refreshUser();
+      if (fresh) apply(fresh);
+    };
+    sync();
+    window.addEventListener('focus', sync);
+    return () => window.removeEventListener('focus', sync);
   }, []);
 
   useGSAP(() => {
@@ -89,7 +103,7 @@ export default function DashboardPage() {
             key={i}
             ref={(el) => (cardsRef.current[i] = el)}
             style={{
-              background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+              background: 'rgb(20,20,36)',
               border: '1px solid rgba(255,255,255,0.06)',
               borderRadius: '4px 16px 16px 16px',
               padding: '20px',
@@ -110,10 +124,10 @@ export default function DashboardPage() {
             }}
           >
             {/* Top accent */}
-            <div style={{
+            {/* <div style={{
               position: 'absolute', top: 0, left: 0, right: 0, height: 2,
               background: `linear-gradient(90deg, transparent, ${card.color}, transparent)`,
-            }} />
+            }} /> */}
 
             {/* Icon */}
             <div style={{

@@ -4,6 +4,7 @@ export const PAYMENT_METHODS = {
   ETH:           { label: 'Ethereum',          icon: 'fab fa-ethereum',     color: '#818cf8' },
   SOL:           { label: 'Solana',             icon: 'fas fa-coins',        color: '#c9a84c' },
   BANK_TRANSFER: { label: 'Bank Transfer',        icon: 'fas fa-building-columns', color: '#5a5a78' },
+  PAYSTACK:      { label: 'Card / Bank Transfer',  icon: 'fas fa-credit-card', color: '#00A693' },
 };
 
 // Placeholder withdrawal fee schedule. There's no FeeConfig model in the

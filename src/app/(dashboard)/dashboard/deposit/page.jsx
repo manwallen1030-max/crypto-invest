@@ -40,6 +40,7 @@ export default function DepositPage() {
   const [proof, setProof] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [paystackLoading, setPaystackLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const [deposits, setDeposits] = useState([]);
@@ -56,7 +57,7 @@ export default function DepositPage() {
 
   // Load wallet addresses whenever the chosen method changes.
   useEffect(() => {
-    if (!method) return;
+    if (!method || method === 'PAYSTACK') return; // Paystack uses gateway, not wallet addresses
     let cancelled = false;
     (async () => {
       setLoadingAddresses(true);
@@ -91,6 +92,16 @@ export default function DepositPage() {
     return () => { cancelled = true; };
   }, [refreshKey]);
 
+  // Handle return from Paystack redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('paystack_success') === 'true') {
+      toast.success('Payment completed! Verifying...');
+      setRefreshKey((k) => k + 1);
+      window.history.replaceState({}, '', '/dashboard/deposit');
+    }
+  }, []);
+
   const copyAddress = () => {
     if (!selectedAddress) return;
     navigator.clipboard.writeText(selectedAddress.address);
@@ -98,7 +109,33 @@ export default function DepositPage() {
     setTimeout(() => setCopied(false), 1800);
   };
 
+  const handlePaystackDeposit = async (e) => {
+    e.preventDefault();
+    const amt = parseFloat(amount);
+    if (!amount || isNaN(amt) || amt < 1) return setErrors({ amount: 'Minimum deposit is $1.00' });
+
+    setPaystackLoading(true);
+    try {
+      const res = await fetch('/api/user/deposits/initialize-paystack', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amt }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to initialize payment');
+
+      window.location.href = data.authorizationUrl;
+    } catch (err) {
+      toast.error(err.message);
+      setPaystackLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
+    if (method === 'PAYSTACK') {
+      return handlePaystackDeposit(e);
+    }
+
     e.preventDefault();
     const newErrors = {};
     const amt = parseFloat(amount);
@@ -189,7 +226,7 @@ export default function DepositPage() {
             </div>
 
             {/* Wallet address to send to */}
-            {method && (
+            {method && method !== 'PAYSTACK' && (
               loadingAddresses ? (
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
                   <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }}></i>
@@ -312,15 +349,17 @@ export default function DepositPage() {
 
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || paystackLoading}
               style={{
                 padding: '13px', borderRadius: 10, fontSize: 14, fontWeight: 700,
-                background: submitting ? 'rgba(201,168,76,0.4)' : 'linear-gradient(135deg, #c9a84c, #a8722a)',
-                color: '#0a0a0f', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
+                background: (submitting || paystackLoading) ? 'rgba(201,168,76,0.4)' : 'linear-gradient(135deg, #c9a84c, #a8722a)',
+                color: '#0a0a0f', border: 'none', cursor: (submitting || paystackLoading) ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}
             >
-              {submitting
+              {paystackLoading
+                ? <><i className="fas fa-spinner fa-spin"></i> Redirecting to Paystack...</>
+                : submitting
                 ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
                 : <><i className="fas fa-paper-plane"></i> Submit Deposit</>}
             </button>

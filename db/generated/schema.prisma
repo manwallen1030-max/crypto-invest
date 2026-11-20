@@ -55,6 +55,7 @@ enum PaymentMethod {
   ETH
   SOL
   BANK_TRANSFER
+  PAYSTACK
 }
 
 enum TransactionType {
@@ -246,6 +247,7 @@ model Deposit {
   walletAddress   WalletAddress? @relation(fields: [walletAddressId], references: [id])
   amount          Int
   method          PaymentMethod
+  reference       String?        @unique
   proofImageUrl   String?
   txHash          String?
   status          DepositStatus  @default(PENDING)
@@ -257,6 +259,7 @@ model Deposit {
 
   @@index([userId])
   @@index([status])
+  @@index([reference])
 }
 
 model Withdrawal {
