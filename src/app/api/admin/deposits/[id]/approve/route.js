@@ -72,6 +72,7 @@ export async function POST(request, { params }) {
     data: {
       userId:  deposit.userId,
       type:    'DEPOSIT',
+      link:    `/dashboard/deposit/history#${id}`,
       title:   'Deposit Approved!',
       message: `Your deposit of $${(deposit.amount / 100).toFixed(2)} via ${deposit.method} has been approved and credited to your balance.`,
     },

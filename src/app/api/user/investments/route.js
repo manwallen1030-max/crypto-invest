@@ -127,6 +127,25 @@ export async function POST(request) {
       return { investment: created, newBalance: user.balance - amount };
     });
 
+    // ── Record the submission for the user ──
+    // Saved as already read: the Investment History badge counts only updates
+    // made by the admin. The request is already saved; a failed notification
+    // shouldn't undo it.
+    try {
+      await prisma.notification.create({
+        data: {
+          userId:  session.id,
+          type:    'INVESTMENT',
+          isRead:  true,
+          title:   'Investment Submitted',
+          message: `Your $${(amount / 100).toFixed(2)} investment in the ${plan.name} plan was submitted and is awaiting approval.`,
+          link:    `/dashboard/investments/history#${investment.id}`,
+        },
+      });
+    } catch (err) {
+      console.error('Investment notification failed:', err);
+    }
+
     // ── Notify admin ─────────────────────────────────────────
     // Non-critical — don't fail the request if email fails
     try {

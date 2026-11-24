@@ -84,5 +84,24 @@ export async function POST(request) {
     },
   });
 
+  // Record of the submission. It is saved as already read, because the user
+  // just did this themselves: the Deposit History badge counts only updates
+  // made by the admin (approve / reject). A failed notification shouldn't
+  // undo a deposit that was saved.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId:  session.id,
+        type:    'DEPOSIT',
+        isRead:  true,
+        title:   'Deposit Submitted',
+        message: `Your deposit of $${(amount / 100).toFixed(2)} via ${method} was submitted and is awaiting review.`,
+        link:    `/dashboard/deposit/history#${deposit.id}`,
+      },
+    });
+  } catch (err) {
+    console.error('Deposit notification failed:', err);
+  }
+
   return NextResponse.json({ message: 'Deposit submitted for review', deposit });
 }

@@ -129,5 +129,22 @@ export async function POST(request) {
     data: { kycStatus: 'PENDING' },
   });
 
+  // Record of the submission, saved as already read: the KYC badge counts only
+  // decisions made by the admin.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId:  session.id,
+        type:    'KYC',
+        isRead:  true,
+        title:   'Documents Submitted',
+        message: 'Your identity documents were submitted and are awaiting review.',
+        link:    `/dashboard/kyc#${submission.id}`,
+      },
+    });
+  } catch (err) {
+    console.error('KYC notification failed:', err);
+  }
+
   return NextResponse.json({ message: 'Documents submitted for review', submission });
 }

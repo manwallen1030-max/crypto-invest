@@ -68,6 +68,7 @@ export async function POST(request, { params }) {
     data: {
       userId:  withdrawal.userId,
       type:    'WITHDRAWAL',
+      link:    `/dashboard/withdraw/history#${id}`,
       title:   'Withdrawal Rejected',
       message: `Your withdrawal of $${(withdrawal.amount / 100).toFixed(2)} was rejected and refunded to your balance. ${note || ''}`,
     },

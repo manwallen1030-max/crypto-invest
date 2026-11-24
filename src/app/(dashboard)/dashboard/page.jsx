@@ -163,9 +163,9 @@ export default function DashboardPage() {
       className="actions-grid"
       >
         {[
-          { label: 'Make a Deposit',    href: '/dashboard/deposit',   icon: 'fas fa-circle-arrow-down', color: '#22c55e', desc: 'Fund your account' },
-          { label: 'Start Investing',   href: '/dashboard/investments', icon: 'fas fa-chart-line',       color: '#c9a84c', desc: 'Browse plans' },
-          { label: 'Withdraw Funds',    href: '/dashboard/withdraw',  icon: 'fas fa-circle-arrow-up',   color: '#818cf8', desc: 'Cash out anytime' },
+          { label: 'Make a Deposit',    href: '/dashboard/deposit/new',   icon: 'fas fa-circle-arrow-down', color: '#22c55e', desc: 'Fund your account' },
+          { label: 'Start Investing',   href: '/dashboard/investments/invest', icon: 'fas fa-chart-line',       color: '#c9a84c', desc: 'Browse plans' },
+          { label: 'Withdraw Funds',    href: '/dashboard/withdraw/new',  icon: 'fas fa-circle-arrow-up',   color: '#818cf8', desc: 'Cash out anytime' },
         ].map((action, i) => (
           <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
             <div style={{
@@ -258,7 +258,7 @@ export default function DashboardPage() {
           <div style={{ fontSize: 13, color: '#5a5a78', marginBottom: 24 }}>
             Make your first deposit to get started
           </div>
-          <Link href="/dashboard/deposit" style={{ textDecoration: 'none' }}>
+          <Link href="/dashboard/deposit/new" style={{ textDecoration: 'none' }}>
             <button style={{
               padding: '10px 24px', borderRadius: 8,
               background: 'linear-gradient(135deg, #c9a84c, #a8722a)',

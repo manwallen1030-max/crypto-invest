@@ -6,6 +6,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
 import DashboardFooter from '@/components/dashboard/DashboardFooter';
 import AuthSession from '@/components/shared/AuthSession';
+import { NotificationBadgesProvider } from '@/lib/notificationBadges';
 export default function DashboardLayout({ children }) {
   const router    = useRouter();
   const [user,    setUser]    = useState(null);
@@ -65,6 +66,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
+    <NotificationBadgesProvider>
     <div style={{
       minHeight: '100vh',
       background: '#0a0a0f',
@@ -115,5 +117,6 @@ export default function DashboardLayout({ children }) {
         <DashboardFooter />
       </div>
     </div>
+    </NotificationBadgesProvider>
   );
 }

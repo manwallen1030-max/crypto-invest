@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import toast from 'react-hot-toast';
+import { markHistorySeen, announceBadgeChange } from '@/lib/notificationBadges';
 
 const DOC_TYPES = [
   { value: 'PASSPORT',        label: 'Passport',              needsBack: false },
@@ -112,6 +113,8 @@ export default function KycPage() {
         if (res.ok) {
           setKycStatus(data.kycStatus);
           setLatest(data.latest);
+          // The user is looking at their verification status: clear the badge.
+          markHistorySeen('KYC');
         }
       } catch {
         toast.error('Could not load your verification status');
@@ -158,6 +161,7 @@ export default function KycPage() {
       setKycStatus('PENDING');
       setLatest(data.submission);
       setShowForm(false);
+      announceBadgeChange();
     } catch {
       toast.error('Network error. Please try again.');
     } finally {

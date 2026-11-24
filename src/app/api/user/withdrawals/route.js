@@ -100,6 +100,24 @@ export async function POST(request) {
       return { withdrawal, newBalance };
     });
 
+    // Record of the request, saved as already read: the Withdrawal History
+    // badge counts only updates made by the admin. A failed notification
+    // shouldn't undo a saved request.
+    try {
+      await prisma.notification.create({
+        data: {
+          userId:  session.id,
+          type:    'WITHDRAWAL',
+          isRead:  true,
+          title:   'Withdrawal Requested',
+          message: `Your withdrawal request of $${(amount / 100).toFixed(2)} via ${method} was submitted and is pending review.`,
+          link:    `/dashboard/withdraw/history#${result.withdrawal.id}`,
+        },
+      });
+    } catch (err) {
+      console.error('Withdrawal notification failed:', err);
+    }
+
     return NextResponse.json({
       message: 'Withdrawal request submitted',
       withdrawal: result.withdrawal,

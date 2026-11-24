@@ -92,7 +92,7 @@ export async function POST(request, { params }) {
           type:    'INVESTMENT',
           title:   'Test Credit Added',
           message: `A test credit of $${(cents / 100).toFixed(2)} was added to your balance. This is test data, not real funds.`,
-          link:    '/dashboard/investments',
+          link:    `/dashboard/investments/history#${id}`,
         },
       });
     } catch (err) {

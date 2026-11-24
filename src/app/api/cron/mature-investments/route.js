@@ -46,6 +46,7 @@ if (secret !== process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.C
           id:      `maturity-${inv.id}`,
           userId:  inv.userId,
           type:    'INVESTMENT',
+          link:    `/dashboard/investments/history#${inv.id}`,
           title:   'Investment Matured!',
           message: `Your ${inv.planName} investment has reached its maturity date. Profit will be released to your balance shortly.`,
         },

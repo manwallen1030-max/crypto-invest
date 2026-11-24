@@ -48,6 +48,7 @@ export async function POST(request, { params }) {
     data: {
       userId:  withdrawal.userId,
       type:    'WITHDRAWAL',
+      link:    `/dashboard/withdraw/history#${id}`,
       title:   'Withdrawal Processed!',
       message: `Your withdrawal of $${(withdrawal.netAmount / 100).toFixed(2)} via ${withdrawal.method} has been sent.${txHash ? ` TX: ${txHash}` : ''}`,
     },

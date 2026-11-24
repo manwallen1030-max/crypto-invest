@@ -66,5 +66,21 @@ export async function POST(request) {
     });
   });
 
+  // In-app notification: lights up the badge on Deposit History. The deposit is
+  // already credited, so a failed notification must not fail the webhook.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId:  deposit.userId,
+        type:    'DEPOSIT',
+        title:   'Deposit Successful',
+        message: `Your Paystack deposit of $${(deposit.amount / 100).toFixed(2)} was received and credited to your balance.`,
+        link:    `/dashboard/deposit/history#${deposit.id}`,
+      },
+    });
+  } catch (err) {
+    console.error('Paystack deposit notification failed:', err);
+  }
+
   return NextResponse.json({ received: true });
 }

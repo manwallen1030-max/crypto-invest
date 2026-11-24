@@ -61,7 +61,7 @@ export async function POST(request, { params }) {
           type:    'INVESTMENT',
           title:   'Investment Approved',
           message: `Your $${(investment.amount / 100).toFixed(2)} investment in the ${investment.planName} plan has been approved and is now active. It matures on ${maturesOn}.`,
-          link:    '/dashboard/investments',
+          link:    `/dashboard/investments/history#${id}`,
         },
       });
     } catch (err) {

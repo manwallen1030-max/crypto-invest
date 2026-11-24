@@ -93,7 +93,7 @@ export async function POST(request, { params }) {
           message: refunds
             ? `Your ${money} investment request for the ${investment.planName} plan was rejected. Reason: ${reason}. The ${money} has been returned to your balance.`
             : `Your ${money} investment request for the ${investment.planName} plan was rejected. Reason: ${reason}. If you already sent a payment, please contact support so we can sort it out.`,
-          link:    '/dashboard/investments',
+          link:    `/dashboard/investments/history#${id}`,
         },
       });
     } catch (err) {

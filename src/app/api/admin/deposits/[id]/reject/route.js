@@ -42,6 +42,7 @@ export async function POST(request, { params }) {
     data: {
       userId:  deposit.userId,
       type:    'DEPOSIT',
+      link:    `/dashboard/deposit/history#${id}`,
       title:   'Deposit Rejected',
       message: note || 'Your deposit request was rejected. Contact support for details.',
     },

@@ -46,5 +46,20 @@ export async function POST(request, { params }) {
     request,
   });
 
+  // The decision is already saved; a failed notification shouldn't undo it.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId:  submission.userId,
+        type:    'KYC',
+        title:   allowResubmit ? 'Please Resubmit Your Documents' : 'Verification Rejected',
+        message: `${allowResubmit ? 'We need new documents.' : 'Your verification was not approved.'} Reason: ${note.trim()}`,
+        link:    `/dashboard/kyc#${id}`,
+      },
+    });
+  } catch (err) {
+    console.error('KYC decision notification failed:', err);
+  }
+
   return NextResponse.json({ message: 'Submission updated', submission: updated });
 }

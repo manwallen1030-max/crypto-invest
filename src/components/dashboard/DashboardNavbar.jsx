@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useBadges } from '@/lib/notificationBadges';
+import NotificationBadge from '@/components/dashboard/NotificationBadge';
 
 export default function DashboardNavbar({ user, onMenuClick }) {
   const [notifOpen, setNotifOpen] = useState(false);
+  // The sidebar is a drawer, so surface "something new in a History page" on
+  // the menu button where the user can see it without opening the drawer.
+  const badges = useBadges();
+  const unreadUpdates = (badges.INVESTMENT || 0) + (badges.DEPOSIT || 0) + (badges.WITHDRAWAL || 0) + (badges.KYC || 0);
 
   return (
     <header style={{
@@ -30,10 +36,14 @@ export default function DashboardNavbar({ user, onMenuClick }) {
           style={{
             background: 'none', border: 'none',
             color: '#9898b8', cursor: 'pointer', fontSize: 18,
-            padding: 4,
+            padding: 4, position: 'relative',
           }}
         >
           <i className="fas fa-bars"></i>
+          <NotificationBadge
+            count={unreadUpdates}
+            style={{ position: 'absolute', top: -6, right: -10, minWidth: 16, height: 16, fontSize: 9 }}
+          />
         </button>
 
         <div>

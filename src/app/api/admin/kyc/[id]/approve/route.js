@@ -36,5 +36,20 @@ export async function POST(request, { params }) {
     request,
   });
 
+  // The approval is already saved; a failed notification shouldn't undo it.
+  try {
+    await prisma.notification.create({
+      data: {
+        userId:  submission.userId,
+        type:    'KYC',
+        title:   'Identity Verified',
+        message: 'Your identity verification was approved.',
+        link:    `/dashboard/kyc#${id}`,
+      },
+    });
+  } catch (err) {
+    console.error('KYC approval notification failed:', err);
+  }
+
   return NextResponse.json({ message: 'KYC approved', submission: updated });
 }
