@@ -75,7 +75,7 @@ export default function DepositOverviewPage() {
 
       <StatGrid>
         <StatCard
-          label="Total Deposited" icon="fas fa-circle-arrow-down" color="#22c55e"
+          label="Total Deposited" icon="fas fa-circle-arrow-down" color="#16c784"
           value={show(formatCurrency(sum(approved)))}
           sub={show(`${approved.length} approved deposit${approved.length === 1 ? '' : 's'}`)}
         />
@@ -85,12 +85,12 @@ export default function DepositOverviewPage() {
           sub={show(`${pending.length} awaiting review`)}
         />
         <StatCard
-          label="Rejected Deposits" icon="fas fa-circle-xmark" color="#ef4444"
+          label="Rejected Deposits" icon="fas fa-circle-xmark" color="#ea3943"
           value={show(rejected.length)}
           sub={show(formatCurrency(sum(rejected)))}
         />
         <StatCard
-          label="All Deposit Requests" icon="fas fa-receipt" color="#818cf8"
+          label="All Deposit Requests" icon="fas fa-receipt" color="#34b8a6"
           value={show(deposits.length)}
           sub="Since you joined"
         />
@@ -100,7 +100,7 @@ export default function DepositOverviewPage() {
       <QuickLinkGrid>
         <QuickLink
           href="/dashboard/deposit/new" label="Deposit Now" desc="Fund your account"
-          icon="fas fa-circle-plus" color="#22c55e"
+          icon="fas fa-circle-plus" color="#16c784"
         />
         <QuickLink
           href="/dashboard/deposit/history" label="Deposit History" desc="Track every deposit"

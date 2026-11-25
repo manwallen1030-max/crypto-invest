@@ -16,7 +16,7 @@ export default function DashboardFooter() {
       justifyContent: 'space-between',
       gap: '10px 24px',
     }}>
-      <span style={{ fontSize: 12, color: '#5a5a78', lineHeight: 1.6 }}>
+      <span style={{ fontSize: 12, color: '#6a6a88', lineHeight: 1.6 }}>
         © {new Date().getFullYear()} {siteConfig.name}. Investing involves risk — returns are not guaranteed.
       </span>
 

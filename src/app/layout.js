@@ -32,8 +32,6 @@ export default function RootLayout({ children }) {
           {children}
            <ChatWidgets /> 
         </SmoothScrollProvider>
-      <Toaster />
-   
         {/* Toast notifications */}
         <Toaster
           position="top-right"
@@ -42,12 +40,12 @@ export default function RootLayout({ children }) {
             style: {
               background: '#16162a',
               color: '#f0f0fa',
-              border: '1px solid rgba(201,168,76,0.2)',
+              border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: '10px',
               fontSize: '13px',
             },
             success: {
-              iconTheme: { primary: '#c9a84c', secondary: '#0a0a0f' },
+              iconTheme: { primary: '#16c784', secondary: '#0a0a0f' },
             },
             error: {
               iconTheme: { primary: '#ef4444', secondary: '#fff' },

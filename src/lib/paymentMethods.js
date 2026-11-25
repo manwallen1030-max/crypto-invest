@@ -1,9 +1,9 @@
 export const PAYMENT_METHODS = {
-  USDT:          { label: 'USDT (Tether)',   icon: 'fas fa-dollar-sign',  color: '#22c55e' },
+  USDT:          { label: 'USDT (Tether)',   icon: 'fas fa-dollar-sign',  color: '#16c784' },
   BTC:           { label: 'Bitcoin',          icon: 'fab fa-bitcoin',      color: '#f97316' },
-  ETH:           { label: 'Ethereum',          icon: 'fab fa-ethereum',     color: '#818cf8' },
-  SOL:           { label: 'Solana',             icon: 'fas fa-coins',        color: '#c9a84c' },
-  BANK_TRANSFER: { label: 'Bank Transfer',        icon: 'fas fa-building-columns', color: '#5a5a78' },
+  ETH:           { label: 'Ethereum',          icon: 'fab fa-ethereum',     color: '#34b8a6' },
+  SOL:           { label: 'Solana',             icon: 'fas fa-coins',        color: '#9945ff' },
+  BANK_TRANSFER: { label: 'Bank Transfer',        icon: 'fas fa-building-columns', color: '#6a6a88' },
   PAYSTACK:      { label: 'Card / Bank Transfer',  icon: 'fas fa-credit-card', color: '#00A693' },
 };
 

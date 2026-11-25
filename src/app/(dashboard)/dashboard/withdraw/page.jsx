@@ -68,7 +68,7 @@ export default function WithdrawOverviewPage() {
 
       <StatGrid>
         <StatCard
-          label="Total Withdrawn" icon="fas fa-circle-arrow-up" color="#818cf8"
+          label="Total Withdrawn" icon="fas fa-circle-arrow-up" color="#34b8a6"
           value={show(formatCurrency(sum(completed, 'amount')))}
           sub={show(`${formatCurrency(sum(completed, 'netAmount'))} received after fees`)}
         />
@@ -78,12 +78,12 @@ export default function WithdrawOverviewPage() {
           sub={show(`${pending.length} awaiting processing`)}
         />
         <StatCard
-          label="Completed Withdrawals" icon="fas fa-circle-check" color="#22c55e"
+          label="Completed Withdrawals" icon="fas fa-circle-check" color="#16c784"
           value={show(completed.length)}
           sub="Sent to your wallet"
         />
         <StatCard
-          label="Rejected Withdrawals" icon="fas fa-circle-xmark" color="#ef4444"
+          label="Rejected Withdrawals" icon="fas fa-circle-xmark" color="#ea3943"
           value={show(rejected.length)}
           sub={show(`${formatCurrency(sum(rejected, 'amount'))} refunded`)}
         />
@@ -93,7 +93,7 @@ export default function WithdrawOverviewPage() {
       <QuickLinkGrid>
         <QuickLink
           href="/dashboard/withdraw/new" label="Withdraw Now" desc="Cash out anytime"
-          icon="fas fa-circle-plus" color="#818cf8"
+          icon="fas fa-circle-plus" color="#34b8a6"
         />
         <QuickLink
           href="/dashboard/withdraw/history" label="Withdrawal History" desc="Track every withdrawal"

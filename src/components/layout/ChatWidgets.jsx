@@ -213,7 +213,7 @@ export default function ChatWidgets() {
   return (
     <>
       {/* LEFT: WhatsApp */}
-      <div ref={leftRef} style={{ position: 'fixed', bottom: 28, left: 24, zIndex: Z, opacity: 0 }}>
+      <div ref={leftRef} className="chat-fab-left" style={{ position: 'fixed', bottom: 28, left: 24, zIndex: Z, opacity: 0 }}>
         <button
           onClick={openWhatsApp}
           title="Chat on WhatsApp"
@@ -237,6 +237,7 @@ export default function ChatWidgets() {
       {/* RIGHT: toasts + live chat button */}
       <div
         ref={rightRef}
+        className="chat-fab-right"
         style={{
           position: 'fixed',
           bottom: 28,
@@ -258,6 +259,7 @@ export default function ChatWidgets() {
 
         <button
           onClick={openSmartsupp}
+          className="chat-fab-btn"
           title="Live Chat Support"
           aria-label="Open live chat"
           style={{

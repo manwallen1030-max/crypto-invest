@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import HistoryShell from '@/components/dashboard/HistoryShell';
 import StatusPill from '@/components/dashboard/StatusPill';
 import { WITHDRAWAL_STATUS } from '@/lib/statusMeta';
@@ -21,30 +23,30 @@ function WithdrawalRow({ w }) {
         background: `${color}15`, border: `1px solid ${color}30`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <i className={method?.icon || 'fas fa-coins'} style={{ fontSize: 14, color }}></i>
+        <FaIcon className={method?.icon || 'fas fa-coins'} style={{ fontSize: 14, color }} />
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13.5, fontWeight: 600, color: '#f0f0fa' }}>
           {formatCurrency(w.amount)}
-          <span style={{ fontSize: 11.5, fontWeight: 500, color: '#5a5a78', marginLeft: 8 }}>
+          <span style={{ fontSize: 11.5, fontWeight: 500, color: '#6a6a88', marginLeft: 8 }}>
             you receive {formatCurrency(w.netAmount)} after {formatCurrency(w.networkFee)} fee
           </span>
         </div>
-        <div style={{ fontSize: 11.5, color: '#5a5a78', marginTop: 2 }}>
+        <div style={{ fontSize: 11.5, color: '#6a6a88', marginTop: 2 }}>
           {method?.label || w.method} · {new Date(w.createdAt).toLocaleString()}
         </div>
-        <div style={{ fontSize: 11, color: '#5a5a78', marginTop: 2, fontFamily: 'monospace' }}>
+        <div style={{ fontSize: 11, color: '#6a6a88', marginTop: 2, fontFamily: 'monospace' }}>
           To: {shorten(w.walletAddress)}
         </div>
         {w.status === 'APPROVED' && w.txHash && (
-          <div style={{ fontSize: 11, color: '#22c55e', marginTop: 4, fontFamily: 'monospace' }}>
-            <i className="fas fa-circle-check" style={{ marginRight: 6 }}></i>TX: {shorten(w.txHash)}
+          <div style={{ fontSize: 11, color: '#16c784', marginTop: 4, fontFamily: 'monospace' }}>
+            <FaIcon className="fas fa-circle-check" style={{ marginRight: 6 }} />TX: {shorten(w.txHash)}
           </div>
         )}
         {w.status === 'REJECTED' && (
-          <div style={{ fontSize: 11.5, color: '#ef4444', marginTop: 4 }}>
-            <i className="fas fa-circle-xmark" style={{ marginRight: 6 }}></i>
+          <div style={{ fontSize: 11.5, color: '#ea3943', marginTop: 4 }}>
+            <FaIcon className="fas fa-circle-xmark" style={{ marginRight: 6 }} />
             {w.adminNote ? `${w.adminNote} · ` : ''}Refunded to your balance
           </div>
         )}

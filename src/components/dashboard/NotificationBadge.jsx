@@ -12,9 +12,9 @@ export default function NotificationBadge({ count, style }) {
       style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         minWidth: 18, height: 18, padding: '0 5px', borderRadius: 100,
-        background: '#ef4444', color: '#fff',
+        background: '#ea3943', color: '#fff',
         fontSize: 10, fontWeight: 800, lineHeight: 1,
-        boxShadow: '0 0 8px rgba(239,68,68,0.5)',
+        boxShadow: '0 0 8px rgba(234,57,67,0.5)',
         flexShrink: 0,
         ...style,
       }}

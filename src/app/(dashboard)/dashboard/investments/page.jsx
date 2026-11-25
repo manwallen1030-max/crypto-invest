@@ -73,7 +73,7 @@ export default function InvestmentsOverviewPage() {
           sub={show(`${active.length + completed.length} approved investment${active.length + completed.length === 1 ? '' : 's'}`)}
         />
         <StatCard
-          label="Active Investments" icon="fas fa-chart-line" color="#22c55e"
+          label="Active Investments" icon="fas fa-chart-line" color="#16c784"
           value={show(active.length)}
           sub={show(`${formatCurrency(sum(active, 'amount'))} working for you`)}
         />
@@ -83,12 +83,12 @@ export default function InvestmentsOverviewPage() {
           sub={show(`${formatCurrency(sum(pending, 'amount'))} awaiting review`)}
         />
         <StatCard
-          label="Expected Returns" icon="fas fa-bullseye" color="#818cf8"
+          label="Expected Returns" icon="fas fa-bullseye" color="#34b8a6"
           value={show(formatCurrency(sum(active, 'expectedReturn')))}
           sub="From active investments"
         />
         <StatCard
-          label="Completed" icon="fas fa-circle-check" color="#818cf8"
+          label="Completed" icon="fas fa-circle-check" color="#34b8a6"
           value={show(completed.length)}
           sub={show(`${formatCurrency(sum(completed, 'releasedAmount'))} paid out`)}
         />
@@ -107,11 +107,11 @@ export default function InvestmentsOverviewPage() {
         />
         <QuickLink
           href="/dashboard/investments/my" label="My Investments" desc="Your active and pending plans"
-          icon="fas fa-briefcase" color="#22c55e"
+          icon="fas fa-briefcase" color="#16c784"
         />
         <QuickLink
           href="/dashboard/investments/history" label="Investment History" desc="Every investment, start to finish"
-          icon="fas fa-clock-rotate-left" color="#818cf8" badge={badges.INVESTMENT}
+          icon="fas fa-clock-rotate-left" color="#34b8a6" badge={badges.INVESTMENT}
         />
       </QuickLinkGrid>
     </div>

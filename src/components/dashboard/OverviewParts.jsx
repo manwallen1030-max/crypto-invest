@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 // Building blocks for the Investments / Deposit / Withdraw overview pages.
 // They reuse the look of the main dashboard's stat and quick-action cards.
 
@@ -16,7 +18,7 @@ export function OverviewHeader({ title, subtitle, actionHref, actionLabel, actio
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           {title}
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>{subtitle}</p>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>{subtitle}</p>
       </div>
       {actionHref && (
         <Link href={actionHref} style={{
@@ -24,7 +26,7 @@ export function OverviewHeader({ title, subtitle, actionHref, actionLabel, actio
           background: 'linear-gradient(135deg, #c9a84c, #a8722a)', color: '#0a0a0f',
           textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
         }}>
-          <i className={actionIcon}></i>
+          <FaIcon className={actionIcon} />
           {actionLabel}
         </Link>
       )}
@@ -79,11 +81,11 @@ export function StatCard({ label, value, sub, icon, color }) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 14,
       }}>
-        <i className={icon} style={{ color, fontSize: 16 }}></i>
+        <FaIcon className={icon} style={{ color, fontSize: 16 }} />
       </div>
-      <div style={{ fontSize: 12, color: '#5a5a78', marginBottom: 6, fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: 12, color: '#6a6a88', marginBottom: 6, fontWeight: 500 }}>{label}</div>
       <div style={{ fontSize: 22, fontWeight: 800, color: '#f0f0fa', letterSpacing: '-0.02em' }}>{value}</div>
-      {sub && <div style={{ fontSize: 11.5, color: '#5a5a78', marginTop: 6 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 11.5, color: '#6a6a88', marginTop: 6 }}>{sub}</div>}
     </div>
   );
 }
@@ -105,7 +107,7 @@ export function QuickLink({ href, label, desc, icon, color, badge }) {
     <Link href={href} style={{ textDecoration: 'none' }}>
       <div
         style={{
-          background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+          background: '#13131f',
           border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: '16px 16px 4px 16px',
           padding: '20px',
@@ -128,15 +130,15 @@ export function QuickLink({ href, label, desc, icon, color, badge }) {
           background: `${color}15`, border: `1px solid ${color}25`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <i className={icon} style={{ color, fontSize: 18 }}></i>
+          <FaIcon className={icon} style={{ color, fontSize: 18 }} />
         </div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#f0f0fa', marginBottom: 2 }}>{label}</div>
-          <div style={{ fontSize: 12, color: '#5a5a78' }}>{desc}</div>
+          <div style={{ fontSize: 12, color: '#6a6a88' }}>{desc}</div>
         </div>
         <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <NotificationBadge count={badge} />
-          <i className="fas fa-arrow-right" style={{ color: '#5a5a78', fontSize: 12 }}></i>
+          <FaIcon className="fas fa-arrow-right" style={{ color: '#6a6a88', fontSize: 12 }} />
         </span>
       </div>
     </Link>

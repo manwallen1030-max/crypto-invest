@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -8,10 +10,10 @@ import toast from 'react-hot-toast';
 const CATEGORIES = ['Account', 'Deposit', 'Withdrawal', 'Investment', 'KYC', 'Other'];
 
 const STATUS_META = {
-  OPEN:        { label: 'Open',        color: '#818cf8' },
+  OPEN:        { label: 'Open',        color: '#34b8a6' },
   IN_PROGRESS: { label: 'In Progress', color: '#eab308' },
-  RESOLVED:    { label: 'Resolved',    color: '#22c55e' },
-  CLOSED:      { label: 'Closed',      color: '#5a5a78' },
+  RESOLVED:    { label: 'Resolved',    color: '#16c784' },
+  CLOSED:      { label: 'Closed',      color: '#6a6a88' },
 };
 
 function StatusPill({ status }) {
@@ -82,7 +84,7 @@ function NewTicketForm({ onCreated, onCancel }) {
 
   return (
     <div style={{
-      background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+      background: '#13131f',
       border: '1px solid rgba(255,255,255,0.06)',
       borderRadius: 16, padding: '26px', marginBottom: 20,
     }}>
@@ -101,11 +103,11 @@ function NewTicketForm({ onCreated, onCancel }) {
                 style={{
                   padding: '12px 14px', borderRadius: 10,
                   background: 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${errors.subject ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                  border: `1px solid ${errors.subject ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
                   color: '#f0f0fa', fontSize: 14, outline: 'none',
                 }}
               />
-              {errors.subject && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.subject}</span>}
+              {errors.subject && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.subject}</span>}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: 13, fontWeight: 600, color: '#9898b8' }}>Category</label>
@@ -115,14 +117,14 @@ function NewTicketForm({ onCreated, onCancel }) {
                 style={{
                   padding: '12px 14px', borderRadius: 10,
                   background: 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${errors.category ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                  color: category ? '#f0f0fa' : '#5a5a78', fontSize: 14, outline: 'none',
+                  border: `1px solid ${errors.category ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                  color: category ? '#f0f0fa' : '#6a6a88', fontSize: 14, outline: 'none',
                 }}
               >
                 <option value="">Select...</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
-              {errors.category && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.category}</span>}
+              {errors.category && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.category}</span>}
             </div>
           </div>
 
@@ -136,11 +138,11 @@ function NewTicketForm({ onCreated, onCancel }) {
               style={{
                 padding: '12px 14px', borderRadius: 10, resize: 'vertical',
                 background: 'rgba(255,255,255,0.04)',
-                border: `1px solid ${errors.message ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                border: `1px solid ${errors.message ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
                 color: '#f0f0fa', fontSize: 14, outline: 'none', fontFamily: 'inherit',
               }}
             />
-            {errors.message && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.message}</span>}
+            {errors.message && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.message}</span>}
           </div>
 
           <div style={{ display: 'flex', gap: 10 }}>
@@ -156,8 +158,8 @@ function NewTicketForm({ onCreated, onCancel }) {
               }}
             >
               {submitting
-                ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
-                : <><i className="fas fa-paper-plane"></i> Submit Ticket</>}
+                ? <><FaIcon className="fas fa-spinner fa-spin" /> Submitting...</>
+                : <><FaIcon className="fas fa-paper-plane" /> Submit Ticket</>}
             </button>
             <button
               type="button"
@@ -236,7 +238,7 @@ function TicketDetail({ ticketId, onBack }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '40vh' }}>
-        <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }}></i>
+        <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }} />
       </div>
     );
   }
@@ -253,11 +255,11 @@ function TicketDetail({ ticketId, onBack }) {
           fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0,
         }}
       >
-        <i className="fas fa-arrow-left" style={{ fontSize: 11 }}></i> Back to tickets
+        <FaIcon className="fas fa-arrow-left" style={{ fontSize: 11 }} /> Back to tickets
       </button>
 
       <div style={{
-        background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+        background: '#13131f',
         border: '1px solid rgba(255,255,255,0.06)',
         borderRadius: 16, overflow: 'hidden',
       }}>
@@ -270,7 +272,7 @@ function TicketDetail({ ticketId, onBack }) {
             <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0fa', marginBottom: 4 }}>
               {ticket.subject}
             </div>
-            <div style={{ fontSize: 12, color: '#5a5a78' }}>
+            <div style={{ fontSize: 12, color: '#6a6a88' }}>
               {ticket.category} · Opened {timeAgo(ticket.createdAt)}
             </div>
           </div>
@@ -286,16 +288,16 @@ function TicketDetail({ ticketId, onBack }) {
             }}>
               <div style={{
                 width: 30, height: 30, borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
-                background: r.isAdminReply ? 'rgba(129,140,248,0.15)' : 'linear-gradient(135deg, #c9a84c, #a8722a)',
-                border: r.isAdminReply ? '1px solid rgba(129,140,248,0.3)' : 'none',
+                background: r.isAdminReply ? 'rgba(52,184,166,0.15)' : 'linear-gradient(135deg, #c9a84c, #a8722a)',
+                border: r.isAdminReply ? '1px solid rgba(52,184,166,0.3)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700, color: r.isAdminReply ? '#818cf8' : '#0a0a0f',
+                fontSize: 11, fontWeight: 700, color: r.isAdminReply ? '#34b8a6' : '#0a0a0f',
               }}>
                 {r.author.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={r.author.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : r.isAdminReply ? (
-                  <i className="fas fa-headset"></i>
+                  <FaIcon className="fas fa-headset" />
                 ) : (
                   `${r.author.firstName?.[0] || ''}${r.author.lastName?.[0] || ''}`
                 )}
@@ -303,13 +305,13 @@ function TicketDetail({ ticketId, onBack }) {
               <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', gap: 4, alignItems: r.isAdminReply ? 'flex-start' : 'flex-end' }}>
                 <div style={{
                   padding: '10px 14px', borderRadius: 12,
-                  background: r.isAdminReply ? 'rgba(129,140,248,0.08)' : 'rgba(201,168,76,0.1)',
-                  border: `1px solid ${r.isAdminReply ? 'rgba(129,140,248,0.2)' : 'rgba(201,168,76,0.2)'}`,
+                  background: r.isAdminReply ? 'rgba(52,184,166,0.08)' : 'rgba(201,168,76,0.1)',
+                  border: `1px solid ${r.isAdminReply ? 'rgba(52,184,166,0.2)' : 'rgba(201,168,76,0.2)'}`,
                   fontSize: 13.5, color: '#e8e8f0', lineHeight: 1.6,
                 }}>
                   {r.message}
                 </div>
-                <span style={{ fontSize: 10.5, color: '#5a5a78' }}>
+                <span style={{ fontSize: 10.5, color: '#6a6a88' }}>
                   {r.isAdminReply ? 'Support Team' : 'You'} · {timeAgo(r.createdAt)}
                 </span>
               </div>
@@ -345,11 +347,11 @@ function TicketDetail({ ticketId, onBack }) {
                 cursor: (sending || !reply.trim()) ? 'not-allowed' : 'pointer',
               }}
             >
-              {sending ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-paper-plane"></i>}
+              {sending ? <FaIcon className="fas fa-spinner fa-spin" /> : <FaIcon className="fas fa-paper-plane" />}
             </button>
           </form>
         ) : (
-          <div style={{ padding: '14px 22px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: 12.5, color: '#5a5a78', textAlign: 'center' }}>
+          <div style={{ padding: '14px 22px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: 12.5, color: '#6a6a88', textAlign: 'center' }}>
             This ticket is closed. Open a new ticket if you need further help.
           </div>
         )}
@@ -416,7 +418,7 @@ export default function SupportPage() {
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
             Support
           </h1>
-          <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+          <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
             Get help with your account, deposits, withdrawals, or anything else.
           </p>
         </div>
@@ -430,7 +432,7 @@ export default function SupportPage() {
               display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap',
             }}
           >
-            <i className="fas fa-plus" style={{ fontSize: 11 }}></i> New Ticket
+            <FaIcon className="fas fa-plus" style={{ fontSize: 11 }} /> New Ticket
           </button>
         )}
       </div>
@@ -451,7 +453,7 @@ export default function SupportPage() {
       <div className="support-section">
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-            <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }}></i>
+            <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }} />
           </div>
         ) : tickets.length === 0 ? (
           <div style={{
@@ -459,9 +461,9 @@ export default function SupportPage() {
             background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: 16,
           }}>
-            <i className="fas fa-headset" style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }}></i>
+            <FaIcon className="fas fa-headset" style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }} />
             <div style={{ fontSize: 14, color: '#9898b8', marginBottom: 4 }}>No support tickets yet</div>
-            <div style={{ fontSize: 12.5, color: '#5a5a78' }}>Open a ticket if you run into any issues.</div>
+            <div style={{ fontSize: 12.5, color: '#6a6a88' }}>Open a ticket if you run into any issues.</div>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -470,7 +472,7 @@ export default function SupportPage() {
                 key={t.id}
                 onClick={() => setActiveTicketId(t.id)}
                 style={{
-                  background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+                  background: '#13131f',
                   border: '1px solid rgba(255,255,255,0.06)',
                   borderRadius: 14, padding: '16px 18px',
                   display: 'flex', alignItems: 'center', gap: 14,
@@ -484,18 +486,18 @@ export default function SupportPage() {
                   background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.15)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <i className="fas fa-headset" style={{ fontSize: 13, color: '#c9a84c' }}></i>
+                  <FaIcon className="fas fa-headset" style={{ fontSize: 13, color: '#c9a84c' }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#f0f0fa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {t.subject}
                   </div>
-                  <div style={{ fontSize: 12, color: '#5a5a78', marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: '#6a6a88', marginTop: 2 }}>
                     {t.category} · {t._count.replies} {t._count.replies === 1 ? 'message' : 'messages'} · {timeAgo(t.updatedAt)}
                   </div>
                 </div>
                 <StatusPill status={t.status} />
-                <i className="fas fa-chevron-right" style={{ fontSize: 11, color: '#5a5a78' }}></i>
+                <FaIcon className="fas fa-chevron-right" style={{ fontSize: 11, color: '#6a6a88' }} />
               </div>
             ))}
           </div>

@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
@@ -9,7 +11,7 @@ import toast from 'react-hot-toast';
 function SectionCard({ children }) {
   return (
     <div style={{
-      background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+      background: '#13131f',
       border: '1px solid rgba(255,255,255,0.06)',
       borderRadius: 16,
       padding: '28px 26px',
@@ -29,11 +31,11 @@ function SectionHeading({ icon, title, subtitle }) {
         border: '1px solid rgba(201,168,76,0.2)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <i className={icon} style={{ fontSize: 14, color: '#c9a84c' }}></i>
+        <FaIcon className={icon} style={{ fontSize: 14, color: '#c9a84c' }} />
       </div>
       <div>
         <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0fa' }}>{title}</div>
-        {subtitle && <div style={{ fontSize: 12.5, color: '#5a5a78', marginTop: 2 }}>{subtitle}</div>}
+        {subtitle && <div style={{ fontSize: 12.5, color: '#6a6a88', marginTop: 2 }}>{subtitle}</div>}
       </div>
     </div>
   );
@@ -54,23 +56,23 @@ function FormInput({ label, name, type = 'text', value, onChange, placeholder, e
           width: '100%',
           padding: '12px 14px',
           background: disabled ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
-          border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+          border: `1px solid ${error ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
           borderRadius: 10,
-          color: disabled ? '#5a5a78' : '#f0f0fa',
+          color: disabled ? '#6a6a88' : '#f0f0fa',
           fontSize: 14,
           outline: 'none',
           cursor: disabled ? 'not-allowed' : 'text',
           transition: 'all 0.2s ease',
         }}
         onFocus={(e) => { if (!disabled) e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'; }}
-        onBlur={(e) => { e.currentTarget.style.borderColor = error ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'; }}
+        onBlur={(e) => { e.currentTarget.style.borderColor = error ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'; }}
       />
       {error && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ef4444' }}>
-          <i className="fas fa-circle-exclamation" style={{ fontSize: 11 }}></i>{error}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ea3943' }}>
+          <FaIcon className="fas fa-circle-exclamation" style={{ fontSize: 11 }} />{error}
         </div>
       )}
-      {hint && !error && <div style={{ fontSize: 12, color: '#5a5a78' }}>{hint}</div>}
+      {hint && !error && <div style={{ fontSize: 12, color: '#6a6a88' }}>{hint}</div>}
     </div>
   );
 }
@@ -256,7 +258,7 @@ export default function SettingsPage() {
   if (loadingUser) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }}></i>
+        <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }} />
       </div>
     );
   }
@@ -269,7 +271,7 @@ export default function SettingsPage() {
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           Settings
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Manage your profile, photo, and account.
         </p>
       </div>
@@ -303,7 +305,7 @@ export default function SettingsPage() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 26, fontWeight: 700, color: '#0a0a0f',
                 }}>
-                  {initials || <i className="fas fa-user"></i>}
+                  {initials || <FaIcon className="fas fa-user" />}
                 </div>
               )}
 
@@ -313,7 +315,7 @@ export default function SettingsPage() {
                   background: 'rgba(10,10,15,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }}></i>
+                  <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }} />
                 </div>
               )}
             </div>
@@ -332,7 +334,7 @@ export default function SettingsPage() {
                     display: 'flex', alignItems: 'center', gap: 8,
                   }}
                 >
-                  <i className="fas fa-upload" style={{ fontSize: 12 }}></i>
+                  <FaIcon className="fas fa-upload" style={{ fontSize: 12 }} />
                   {user?.avatarUrl ? 'Change photo' : 'Upload photo'}
                 </button>
 
@@ -342,17 +344,17 @@ export default function SettingsPage() {
                     disabled={removingAvatar || uploadingAvatar}
                     style={{
                       padding: '9px 16px', borderRadius: 9, fontSize: 13, fontWeight: 700,
-                      background: 'rgba(239,68,68,0.08)',
-                      border: '1px solid rgba(239,68,68,0.2)',
-                      color: '#ef4444',
+                      background: 'rgba(234,57,67,0.08)',
+                      border: '1px solid rgba(234,57,67,0.2)',
+                      color: '#ea3943',
                       cursor: (removingAvatar || uploadingAvatar) ? 'not-allowed' : 'pointer',
                       opacity: removingAvatar ? 0.6 : 1,
                       display: 'flex', alignItems: 'center', gap: 8,
                     }}
                   >
                     {removingAvatar
-                      ? <i className="fas fa-spinner fa-spin" style={{ fontSize: 12 }}></i>
-                      : <i className="fas fa-trash" style={{ fontSize: 12 }}></i>}
+                      ? <FaIcon className="fas fa-spinner fa-spin" style={{ fontSize: 12 }} />
+                      : <FaIcon className="fas fa-trash" style={{ fontSize: 12 }} />}
                     Remove
                   </button>
                 )}
@@ -420,8 +422,8 @@ export default function SettingsPage() {
                   }}
                 >
                   {savingProfile
-                    ? <><i className="fas fa-spinner fa-spin"></i> Saving...</>
-                    : <><i className="fas fa-check"></i> Save Changes</>}
+                    ? <><FaIcon className="fas fa-spinner fa-spin" /> Saving...</>
+                    : <><FaIcon className="fas fa-check" /> Save Changes</>}
                 </button>
               </div>
             </div>
@@ -443,19 +445,19 @@ export default function SettingsPage() {
             disabled={loggingOut}
             style={{
               width: '100%', padding: '13px', borderRadius: 10,
-              background: 'rgba(239,68,68,0.08)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              color: '#ef4444', fontSize: 14, fontWeight: 700,
+              background: 'rgba(234,57,67,0.08)',
+              border: '1px solid rgba(234,57,67,0.2)',
+              color: '#ea3943', fontSize: 14, fontWeight: 700,
               cursor: loggingOut ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
               transition: 'background 0.2s ease',
             }}
-            onMouseEnter={(e) => { if (!loggingOut) e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
+            onMouseEnter={(e) => { if (!loggingOut) e.currentTarget.style.background = 'rgba(234,57,67,0.15)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(234,57,67,0.08)'; }}
           >
             {loggingOut
-              ? <><i className="fas fa-spinner fa-spin"></i> Signing out...</>
-              : <><i className="fas fa-right-from-bracket"></i> Sign Out</>}
+              ? <><FaIcon className="fas fa-spinner fa-spin" /> Signing out...</>
+              : <><FaIcon className="fas fa-right-from-bracket" /> Sign Out</>}
           </button>
         </SectionCard>
       </div>

@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -93,13 +95,13 @@ export default function WithdrawNowPage() {
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           Withdraw Funds
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Available balance: <span style={{ color: '#c9a84c', fontWeight: 700 }}>{formatCurrency(balance)}</span>
         </p>
       </div>
 
       <div className="withdraw-section" style={{
-        background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+        background: '#13131f',
         border: '1px solid rgba(255,255,255,0.06)',
         borderRadius: 16, padding: '26px', marginBottom: 20,
       }}>
@@ -121,14 +123,14 @@ export default function WithdrawNowPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <i className={m.icon} style={{ fontSize: 16, color: method === key ? m.color : '#9898b8' }}></i>
+                    <FaIcon className={m.icon} style={{ fontSize: 16, color: method === key ? m.color : '#9898b8' }} />
                     <span style={{ fontSize: 11, fontWeight: 600, color: method === key ? m.color : '#9898b8' }}>
                       {m.label}
                     </span>
                   </button>
                 ))}
               </div>
-              {errors.method && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.method}</span>}
+              {errors.method && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.method}</span>}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -140,17 +142,17 @@ export default function WithdrawNowPage() {
                 style={{
                   padding: '12px 14px', borderRadius: 10,
                   background: 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${errors.walletAddress ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                  border: `1px solid ${errors.walletAddress ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
                   color: '#f0f0fa', fontSize: 13.5, outline: 'none', fontFamily: 'monospace',
                 }}
               />
-              {errors.walletAddress && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.walletAddress}</span>}
+              {errors.walletAddress && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.walletAddress}</span>}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: 13, fontWeight: 600, color: '#9898b8' }}>Amount (USD)</label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#5a5a78', fontSize: 14 }}>$</span>
+                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#6a6a88', fontSize: 14 }}>$</span>
                 <input
                   type="number" min="10" step="0.01"
                   value={amount}
@@ -159,12 +161,12 @@ export default function WithdrawNowPage() {
                   style={{
                     width: '100%', padding: '12px 14px 12px 28px', borderRadius: 10,
                     background: 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${errors.amount ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    border: `1px solid ${errors.amount ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
                     color: '#f0f0fa', fontSize: 14, outline: 'none',
                   }}
                 />
               </div>
-              {errors.amount && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.amount}</span>}
+              {errors.amount && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.amount}</span>}
             </div>
 
             {/* Live fee breakdown */}
@@ -197,8 +199,8 @@ export default function WithdrawNowPage() {
               }}
             >
               {submitting
-                ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
-                : <><i className="fas fa-paper-plane"></i> Request Withdrawal</>}
+                ? <><FaIcon className="fas fa-spinner fa-spin" /> Submitting...</>
+                : <><FaIcon className="fas fa-paper-plane" /> Request Withdrawal</>}
             </button>
           </div>
         </form>

@@ -256,3 +256,212 @@ html.lenis {
   0%   { transform: translateY(0px) scale(1); opacity: 0.4; }
   100% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
 }
+/* ══════════════════════════════════════════════════════════════
+   USER DASHBOARD THEME — "midnight trader"
+   Deep slate surfaces, azure accent, market green / red for gains
+   and losses. Scoped to the (dashboard) route group via .dash-root
+   so the public marketing site keeps its own look.
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes dashSpin { to { transform: rotate(360deg); } }
+@keyframes dashPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(22,199,132,0.55); }
+  100% { box-shadow: 0 0 0 8px rgba(22,199,132,0); }
+}
+@keyframes dashShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.dash-spin { animation: dashSpin 0.9s linear infinite; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.dash-root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(900px 420px at 8% -5%, rgba(201,168,76,0.10), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(14,165,233,0.06), transparent 60%),
+    #0a0a0f;
+  color: #f0f0fa;
+}
+.dash-root ::selection { background: rgba(201,168,76,0.3); color: #fff; }
+
+.dash-shell { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; min-width: 0; }
+
+.dash-header {
+  height: 64px;
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 20px;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.dash-main {
+  flex: 1; width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 22px 20px 28px;
+}
+
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: #a8a8c4; cursor: pointer; transition: all .2s ease;
+}
+.icon-btn:hover { border-color: rgba(201,168,76,0.45); color: #e8c96a; background: rgba(201,168,76,0.08); }
+
+.avatar-btn {
+  width: 40px; height: 40px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #c9a84c, #a8722a);
+  color: #0a0a0f; font-size: 13px; font-weight: 800; text-decoration: none;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 6px 18px rgba(168,114,42,0.3);
+}
+
+.balance-chip {
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px;
+  border-radius: 12px; cursor: pointer; font-size: 13px; color: #9898b8;
+  background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.28);
+  transition: border-color .2s ease;
+}
+.balance-chip:hover { border-color: rgba(201,168,76,0.6); }
+.balance-chip-label { font-size: 11.5px; color: #9898b8; }
+
+.panel {
+  background: #13131f;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 18px; overflow: hidden;
+}
+
+.btn-solid {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px;
+  background: linear-gradient(135deg, #c9a84c, #a8722a); color: #0a0a0f;
+  font-size: 13px; font-weight: 700; text-decoration: none; border: none; cursor: pointer;
+  box-shadow: none;
+}
+
+.wallet-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none;
+  transition: transform .18s ease;
+}
+.wallet-btn:active { transform: scale(0.96); }
+
+.skeleton {
+  border-radius: 10px;
+  background: linear-gradient(90deg, #16162a 25%, #22223a 50%, #16162a 75%);
+  background-size: 200% 100%; animation: dashShimmer 1.8s linear infinite;
+}
+
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #16c784; animation: dashPulse 1.6s ease-out infinite; }
+
+/* home layout */
+.home-hero { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.home-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.stat-tile {
+  background: #13131f;
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px;
+  transition: transform .25s ease, border-color .25s ease;
+}
+.stat-tile:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.28); }
+.home-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.quick-action {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+  background: #13131f; border: 1px solid rgba(255,255,255,0.06);
+  transition: transform .2s ease, border-color .2s ease;
+}
+.quick-action:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.35); }
+.home-market { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+
+.drawer-row { transition: background .2s ease; }
+.drawer-row:hover { background: rgba(255,255,255,0.05) !important; }
+.drawer-sub:hover { background: rgba(255,255,255,0.05) !important; color: #e8c96a !important; }
+.news-link { transition: background .2s ease; }
+.news-link:hover { background: rgba(255,255,255,0.03); }
+
+@media (min-width: 1024px) {
+  .home-hero { grid-template-columns: minmax(380px, 460px) minmax(0, 1fr); align-items: stretch; }
+  .home-stats { align-content: stretch; }
+  .stat-tile { display: flex; flex-direction: column; justify-content: center; }
+}
+@media (min-width: 1100px) {
+  .home-market { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+}
+
+/* bottom nav — phones only */
+.bottom-nav { display: none; }
+
+@media (max-width: 768px) {
+  .dash-header { padding: 0 14px; }
+  .dash-header-title .dash-welcome { display: none; }
+  .balance-chip-label { display: none; }
+  .dash-main { padding: 16px 14px calc(104px + env(safe-area-inset-bottom, 0px)); }
+  .dash-shell footer { margin-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+
+  .bottom-nav {
+    display: flex; align-items: stretch;
+    position: fixed; z-index: 55;
+    left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    height: 66px; border-radius: 22px;
+    background: rgba(13,20,32,0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+  }
+  .bottom-nav-dot {
+    position: absolute; top: 0; left: 0; width: 20px; height: 3px; border-radius: 0 0 4px 4px;
+    background: #c9a84c; box-shadow: 0 0 12px #c9a84c; opacity: 0;
+  }
+  .bottom-nav-item {
+    flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; text-decoration: none; color: #6a6a88; -webkit-tap-highlight-color: transparent;
+  }
+  .bottom-nav-label { font-size: 10.5px; font-weight: 600; }
+  .bottom-nav-item.is-active { color: #fff; }
+  .bottom-nav-item.is-active .bottom-nav-icon { color: #c9a84c; }
+  .bottom-nav-item.is-primary .bottom-nav-icon {
+    width: 50px; height: 50px; margin-top: -26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; color: #0a0a0f;
+    background: #c9a84c;
+    border: 4px solid #0a0a0f;
+    box-shadow: 0 10px 24px rgba(168,114,42,0.5);
+  }
+  .bottom-nav-item.is-primary.is-active .bottom-nav-icon { color: #0a0a0f; }
+  .bottom-nav-item.is-primary .bottom-nav-label { margin-top: -2px; }
+}
+
+@media (max-width: 560px) {
+  .home-actions { gap: 8px; }
+  .quick-action { flex-direction: column; text-align: center; gap: 8px; padding: 14px 8px; }
+  .quick-action > svg { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot, .skeleton { animation: none; }
+}
+
+/* Floating chat buttons: when the dashboard is on screen, recolour the support
+   button to the dashboard theme and lift both above the mobile bottom nav. */
+
+@media (max-width: 768px) {
+  .dash-header-title .brand-word { display: none; }
+  body:has(.dash-root) .chat-fab-left,
+  body:has(.dash-root) .chat-fab-right {
+    bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  body:has(.dash-root) .chat-fab-left { left: 14px !important; }
+  body:has(.dash-root) .chat-fab-right { right: 14px !important; }
+  body:has(.dash-root) .chat-fab-left button,
+  body:has(.dash-root) .chat-fab-btn { width: 46px !important; height: 46px !important; font-size: 20px !important; }
+}
+
+body[data-drawer='open'] .chat-fab-left,
+body[data-drawer='open'] .chat-fab-right { opacity: 0 !important; pointer-events: none !important; }
+
+@media (max-width: 520px) {
+  .strip-cell { font-size: 11px; }
+  .strip-cell svg { display: none; }
+}

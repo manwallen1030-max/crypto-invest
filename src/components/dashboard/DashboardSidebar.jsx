@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { gsap } from 'gsap';
+import { X, ChevronDown, LogOut, TrendingUp } from 'lucide-react';
 import { companyLinks, legalLinks } from '@/lib/siteConfig';
 import { useBadges } from '@/lib/notificationBadges';
 import NotificationBadge from '@/components/dashboard/NotificationBadge';
+import WalletCard from '@/components/dashboard/WalletCard';
+import FaIcon from '@/components/ui/FaIcon';
 
 // A link with `children` becomes an expandable dropdown. Its own href is the
 // section's overview page; each child is a page inside the section. A child
@@ -59,13 +63,12 @@ const navItems = [
   },
 ];
 
-// Which dropdown (if any) the current page belongs to.
+const ACCENT = '#c9a84c';
+
 function groupHrefFor(pathname) {
   for (const section of navItems) {
     for (const link of section.links) {
-      if (link.children && (pathname === link.href || pathname.startsWith(`${link.href}/`))) {
-        return link.href;
-      }
+      if (link.children && (pathname === link.href || pathname.startsWith(`${link.href}/`))) return link.href;
     }
   }
   return null;
@@ -74,104 +77,52 @@ function groupHrefFor(pathname) {
 function NavDropdown({ link, pathname, open, onToggle, badges }) {
   const isOverview = pathname === link.href;
   const inGroup = isOverview || pathname.startsWith(`${link.href}/`);
-  // While collapsed, the section row carries the combined count of its children.
   const total = link.children.reduce((t, c) => t + (c.badge ? badges[c.badge] || 0 : 0), 0);
   const panelId = `sidebar-group-${link.label.toLowerCase()}`;
 
   return (
-    <div style={{ marginBottom: 2 }}>
+    <div className="drawer-item" style={{ marginBottom: 2 }}>
       <div
+        className="drawer-row"
         style={{
-          display: 'flex', alignItems: 'center', borderRadius: 8,
-          background: isOverview ? 'rgba(201,168,76,0.1)' : 'transparent',
-          border: `1px solid ${isOverview ? 'rgba(201,168,76,0.2)' : 'transparent'}`,
-          transition: 'all 0.2s ease',
-        }}
-        onMouseEnter={(e) => {
-          if (!isOverview) e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-        }}
-        onMouseLeave={(e) => {
-          if (!isOverview) e.currentTarget.style.background = 'transparent';
+          display: 'flex', alignItems: 'center', borderRadius: 10,
+          background: inGroup ? 'rgba(201,168,76,0.1)' : 'transparent',
+          border: `1px solid ${inGroup ? 'rgba(201,168,76,0.22)' : 'transparent'}`,
         }}
       >
-        {/* Label: opens the section's overview page */}
-        <Link
-          href={link.href}
-          style={{
-            textDecoration: 'none', flex: 1, minWidth: 0,
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: '10px 0 10px 12px',
-          }}
-        >
-          <i className={link.icon} style={{
-            fontSize: 14, color: inGroup ? '#c9a84c' : '#5a5a78',
-            width: 16, textAlign: 'center',
-          }}></i>
-          <span style={{
-            fontSize: 13, fontWeight: inGroup ? 600 : 500,
-            color: inGroup ? '#c9a84c' : '#9898b8',
-          }}>
-            {link.label}
-          </span>
+        <Link href={link.href} style={{
+          textDecoration: 'none', flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0 12px 12px',
+        }}>
+          <FaIcon className={link.icon} style={{ fontSize: 15, color: inGroup ? ACCENT : '#6a6a88' }} />
+          <span style={{ fontSize: 14, fontWeight: inGroup ? 700 : 500, color: inGroup ? '#fff' : '#a8a8c4' }}>{link.label}</span>
           {!open && <NotificationBadge count={total} style={{ marginLeft: 'auto' }} />}
         </Link>
-
-        {/* Chevron: expands / collapses the dropdown */}
         <button
-          type="button"
-          onClick={onToggle}
-          aria-expanded={open}
-          aria-controls={panelId}
+          type="button" onClick={onToggle} aria-expanded={open} aria-controls={panelId}
           aria-label={`${open ? 'Collapse' : 'Expand'} ${link.label} menu`}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            padding: '10px 12px', display: 'flex', alignItems: 'center',
-          }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '12px 14px', display: 'flex', alignItems: 'center', color: '#6a6a88' }}
         >
-          <i
-            className="fas fa-chevron-down"
-            style={{
-              fontSize: 10, color: '#5a5a78',
-              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.25s ease',
-            }}
-          ></i>
+          <ChevronDown size={15} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .25s ease' }} />
         </button>
       </div>
 
       {open && (
-        <div
-          id={panelId}
-          style={{ marginTop: 4, marginLeft: 18, paddingLeft: 10, borderLeft: '1px solid rgba(255,255,255,0.06)' }}
-        >
+        <div id={panelId} style={{ marginTop: 4, marginLeft: 20, paddingLeft: 10, borderLeft: '1px solid rgba(255,255,255,0.07)' }}>
           {link.children.map((child) => {
             const active = pathname === child.href;
             const count = child.badge ? badges[child.badge] || 0 : 0;
             return (
-              <Link
-                key={child.href}
-                href={child.href}
-                className="sidebar-sub-link"
-                style={{
-                  textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '8px 10px', borderRadius: 6, marginBottom: 2,
-                  background: active ? 'rgba(201,168,76,0.08)' : 'transparent',
-                }}
-              >
-                <span style={{
-                  fontSize: 12.5, fontWeight: active ? 600 : 500,
-                  color: active ? '#c9a84c' : '#8888a8',
-                }}>
-                  {child.label}
-                </span>
+              <Link key={child.href} href={child.href} className="drawer-sub" style={{
+                textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8,
+                padding: '9px 10px', borderRadius: 8, marginBottom: 2,
+                background: active ? 'rgba(201,168,76,0.1)' : 'transparent',
+                fontSize: 13, fontWeight: active ? 700 : 500, color: active ? '#e8c96a' : '#9898b8',
+              }}>
+                {child.label}
                 <NotificationBadge count={count} style={{ marginLeft: 'auto' }} />
               </Link>
             );
           })}
-          <style>{`
-            .sidebar-sub-link:hover { background: rgba(255,255,255,0.04) !important; }
-            .sidebar-sub-link:hover span:first-child { color: #c9a84c !important; }
-          `}</style>
         </div>
       )}
     </div>
@@ -180,13 +131,14 @@ function NavDropdown({ link, pathname, open, onToggle, badges }) {
 
 export default function DashboardSidebar({ user, isOpen, onClose }) {
   const pathname = usePathname();
-  const router   = useRouter();
+  const router = useRouter();
   const [infoOpen, setInfoOpen] = useState(false);
   const badges = useBadges();
+  const asideRef = useRef(null);
+  const backdropRef = useRef(null);
+  const firstRun = useRef(true);
+  const tlRef = useRef(null);
 
-  // Dropdowns start open for the section the user is currently in, and a
-  // section opens by itself whenever the user navigates into it. The chevron
-  // still lets them collapse or expand any section by hand.
   const activeGroup = groupHrefFor(pathname);
   const [openGroups, setOpenGroups] = useState(() => (activeGroup ? { [activeGroup]: true } : {}));
   const [prevActiveGroup, setPrevActiveGroup] = useState(activeGroup);
@@ -195,6 +147,64 @@ export default function DashboardSidebar({ user, isOpen, onClose }) {
     if (activeGroup) setOpenGroups((o) => ({ ...o, [activeGroup]: true }));
   }
   const toggleGroup = (href) => setOpenGroups((o) => ({ ...o, [href]: !o[href] }));
+
+  // Wallet numbers shown on the drawer card come from the same stored user.
+  const balance = user?.balance || 0;
+
+  // Close the drawer whenever the route changes (tapping a link navigates).
+  const lastPath = useRef(pathname);
+  useEffect(() => {
+    if (lastPath.current !== pathname) {
+      lastPath.current = pathname;
+      if (isOpen) onClose();
+    }
+  }, [pathname, isOpen, onClose]);
+
+  // Escape closes the drawer.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
+  // GSAP open / close choreography.
+  useEffect(() => {
+    const aside = asideRef.current;
+    const backdrop = backdropRef.current;
+    if (!aside || !backdrop) return;
+
+    if (firstRun.current) {
+      firstRun.current = false;
+      gsap.set(aside, { xPercent: -105, autoAlpha: 0 });
+      gsap.set(backdrop, { autoAlpha: 0 });
+      return;
+    }
+
+    const lenis = typeof window !== 'undefined' ? window.__lenis : null;
+    document.body.dataset.drawer = isOpen ? 'open' : 'closed';
+    tlRef.current?.kill();
+    const items = aside.querySelectorAll('.drawer-item, .drawer-group-title');
+    const wallet = aside.querySelector('.drawer-wallet');
+
+    if (isOpen) {
+      lenis?.stop();
+      tlRef.current = gsap.timeline()
+        .to(backdrop, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, 0)
+        .set(aside, { autoAlpha: 1 }, 0)
+        .fromTo(aside, { xPercent: -105 }, { xPercent: 0, duration: 0.55, ease: 'power4.out' }, 0)
+        .fromTo(wallet, { y: 24, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.5)' }, 0.12)
+        .fromTo(items, { x: -18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, stagger: 0.03, ease: 'power3.out' }, 0.2);
+    } else {
+      lenis?.start();
+      tlRef.current = gsap.timeline()
+        .to(aside, { xPercent: -105, duration: 0.38, ease: 'power3.in' }, 0)
+        .to(backdrop, { autoAlpha: 0, duration: 0.3 }, 0.05)
+        .set(aside, { autoAlpha: 0 });
+    }
+  }, [isOpen]);
+
+  useEffect(() => () => { window.__lenis?.start(); delete document.body.dataset.drawer; }, []);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
@@ -205,122 +215,67 @@ export default function DashboardSidebar({ user, isOpen, onClose }) {
 
   return (
     <>
-      <aside style={{
-        position: 'fixed',
-        top: 0, left: 0,
-        width: 260,
-        height: '100vh',
-        background: '#10101a',
-        borderRight: '1px solid rgba(201,168,76,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 50,
-        transition: 'transform 0.3s ease',
-        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-        overflowY: 'auto',
-      }}
-      className="dashboard-sidebar"
+      <div
+        ref={backdropRef}
+        onClick={onClose}
+        aria-hidden="true"
+        style={{ position: 'fixed', inset: 0, background: 'rgba(3,6,12,0.66)', backdropFilter: 'blur(5px)', zIndex: 60, visibility: 'hidden' }}
+      />
+
+      <aside
+        ref={asideRef}
+        className="dashboard-sidebar"
+        aria-label="Main menu"
+        aria-hidden={!isOpen}
+        style={{
+          position: 'fixed', top: 0, left: 0, bottom: 0,
+          width: 'min(340px, 90vw)',
+          background: '#10101a',
+          borderRight: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex', flexDirection: 'column', zIndex: 70,
+          overflowY: 'auto', overscrollBehavior: 'contain',
+          visibility: 'hidden',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+        }}
       >
-
-        {/* Logo */}
-        <div style={{
-          padding: '24px 20px',
-          borderBottom: '1px solid rgba(255,255,255,0.04)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-          <Link href="/" style={{
-            textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: 10,
-          }}>
+        {/* Brand + close */}
+        <div style={{ padding: '18px 18px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
-              width: 32, height: 32, borderRadius: 8,
-              background: 'linear-gradient(135deg, #c9a84c, #a8722a)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 16px rgba(201,168,76,0.25)',
+              width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'linear-gradient(135deg,#c9a84c,#a8722a)', boxShadow: '0 6px 18px rgba(168,114,42,0.4)',
             }}>
-              <i className="fas fa-chart-line" style={{ color: '#0a0a0f', fontSize: 12 }}></i>
+              <TrendingUp size={18} color="#0a0a0f" strokeWidth={2.6} />
             </div>
-            <span style={{
-              fontSize: 16, fontWeight: 900,
-              background: 'linear-gradient(135deg, #f0f0fa, #c9a84c)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>
-              VAULTEX
-            </span>
+            <span style={{ fontSize: 17, fontWeight: 900, letterSpacing: '0.04em', color: '#fff' }}>VAULTEX</span>
           </Link>
-
-          {/* Close button — mobile only */}
-          <button
-            onClick={onClose}
-            className="sidebar-close-btn"
-            style={{
-              background: 'none', border: 'none',
-              color: '#5a5a78', cursor: 'pointer', fontSize: 16,
-            }}
-          >
-            <i className="fas fa-xmark"></i>
+          <button type="button" onClick={onClose} aria-label="Close menu" style={{
+            width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: '#a8a8c4', cursor: 'pointer',
+          }}>
+            <X size={18} />
           </button>
         </div>
 
-        {/* User info */}
-        <div style={{
-          padding: '16px 20px',
-          borderBottom: '1px solid rgba(255,255,255,0.04)',
-        }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '12px 14px',
-            background: 'rgba(255,255,255,0.03)',
-            borderRadius: 10,
-            border: '1px solid rgba(255,255,255,0.05)',
-          }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: user?.avatarUrl ? 'transparent' : 'linear-gradient(135deg, #c9a84c, #a8722a)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, fontWeight: 700, color: '#0a0a0f',
-              flexShrink: 0, overflow: 'hidden',
-            }}>
-              {user?.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={user.avatarUrl}
-                  alt="Profile"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <>{user?.firstName?.[0]}{user?.lastName?.[0]}</>
-              )}
-            </div>
-            <div style={{ overflow: 'hidden' }}>
-              <div style={{
-                fontSize: 13, fontWeight: 600,
-                color: '#f0f0fa', whiteSpace: 'nowrap',
-                overflow: 'hidden', textOverflow: 'ellipsis',
-              }}>
-                {user?.firstName} {user?.lastName}
-              </div>
-              <div style={{
-                fontSize: 11, color: '#5a5a78',
-                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-              }}>
-                {user?.email}
-              </div>
-            </div>
-          </div>
+        {/* Wallet */}
+        <div className="drawer-wallet" style={{ padding: '8px 16px 14px' }}>
+          <WalletCard
+            compact
+            user={user}
+            balance={balance}
+            profit={user?.totalProfit || 0}
+            deposited={user?.totalDeposited || 0}
+            onNavigate={onClose}
+          />
         </div>
 
-        {/* Nav links */}
-        <nav style={{ flex: 1, padding: '16px 12px', overflowY: 'auto' }}>
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '6px 12px 12px' }}>
           {navItems.map((group, gi) => (
-            <div key={gi} style={{ marginBottom: 24 }}>
-              <div style={{
-                fontSize: 10, fontWeight: 700,
-                color: '#5a5a78', letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                padding: '0 8px', marginBottom: 6,
+            <div key={gi} style={{ marginBottom: 18 }}>
+              <div className="drawer-group-title" style={{
+                fontSize: 10.5, fontWeight: 700, color: '#5a5a78', letterSpacing: '0.12em',
+                textTransform: 'uppercase', padding: '0 8px', marginBottom: 6,
               }}>
                 {group.group}
               </div>
@@ -329,68 +284,23 @@ export default function DashboardSidebar({ user, isOpen, onClose }) {
                 if (link.children) {
                   return (
                     <NavDropdown
-                      key={li}
-                      link={link}
-                      pathname={pathname}
-                      open={!!openGroups[link.href]}
-                      onToggle={() => toggleGroup(link.href)}
-                      badges={badges}
+                      key={li} link={link} pathname={pathname} badges={badges}
+                      open={!!openGroups[link.href]} onToggle={() => toggleGroup(link.href)}
                     />
                   );
                 }
                 const isActive = pathname === link.href;
                 return (
-                  <Link
-                    key={li}
-                    href={link.href}
-                    style={{ textDecoration: 'none', display: 'block', marginBottom: 2 }}
-                  >
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '10px 12px', borderRadius: 8,
+                  <Link key={li} href={link.href} className="drawer-item" style={{ textDecoration: 'none', display: 'block', marginBottom: 2 }}>
+                    <div className="drawer-row" style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '12px', borderRadius: 10,
                       background: isActive ? 'rgba(201,168,76,0.1)' : 'transparent',
-                      border: `1px solid ${isActive ? 'rgba(201,168,76,0.2)' : 'transparent'}`,
-                      transition: 'all 0.2s ease',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = 'transparent';
-                      }
-                    }}
-                    >
-                      <i className={link.icon} style={{
-                        fontSize: 14,
-                        color: isActive ? '#c9a84c' : '#5a5a78',
-                        width: 16, textAlign: 'center',
-                      }}></i>
-                      <span style={{
-                        fontSize: 13, fontWeight: isActive ? 600 : 500,
-                        color: isActive ? '#c9a84c' : '#9898b8',
-                      }}>
-                        {link.label}
-                      </span>
-
-                      {/* Active indicator */}
-                      {isActive && (
-                        <div style={{
-                          marginLeft: 'auto',
-                          width: 4, height: 4, borderRadius: '50%',
-                          background: '#c9a84c',
-                          boxShadow: '0 0 8px #c9a84c',
-                        }} />
-                      )}
-
-                      {/* Unread updates (used by KYC Verify) */}
-                      <NotificationBadge
-                        count={link.badge ? badges[link.badge] || 0 : 0}
-                        style={{ marginLeft: isActive ? 8 : 'auto' }}
-                      />
+                      border: `1px solid ${isActive ? 'rgba(201,168,76,0.22)' : 'transparent'}`,
+                    }}>
+                      <FaIcon className={link.icon} style={{ fontSize: 15, color: isActive ? ACCENT : '#6a6a88' }} />
+                      <span style={{ fontSize: 14, fontWeight: isActive ? 700 : 500, color: isActive ? '#fff' : '#a8a8c4' }}>{link.label}</span>
+                      {isActive && <span style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: ACCENT, boxShadow: `0 0 10px ${ACCENT}` }} />}
+                      <NotificationBadge count={link.badge ? badges[link.badge] || 0 : 0} style={{ marginLeft: isActive ? 8 : 'auto' }} />
                     </div>
                   </Link>
                 );
@@ -398,90 +308,47 @@ export default function DashboardSidebar({ user, isOpen, onClose }) {
             </div>
           ))}
 
-          {/* Legal & Info dropdown — each entry opens its own page */}
-          <div style={{ marginBottom: 24 }}>
+          {/* Legal & Info */}
+          <div className="drawer-item" style={{ marginBottom: 8 }}>
             <button
-              type="button"
-              onClick={() => setInfoOpen((o) => !o)}
-              aria-expanded={infoOpen}
-              aria-controls="sidebar-info-links"
+              type="button" onClick={() => setInfoOpen((o) => !o)} aria-expanded={infoOpen} aria-controls="sidebar-info-links"
+              className="drawer-row"
               style={{
-                width: '100%',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 12px', borderRadius: 8, cursor: 'pointer',
-                background: infoOpen ? 'rgba(255,255,255,0.04)' : 'transparent',
-                border: '1px solid transparent',
-                transition: 'all 0.2s ease',
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px', borderRadius: 10, cursor: 'pointer', background: 'transparent', border: '1px solid transparent',
               }}
             >
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <i className="fas fa-circle-info" style={{ fontSize: 14, color: '#5a5a78', width: 16, textAlign: 'center' }}></i>
-                <span style={{ fontSize: 13, fontWeight: 500, color: '#9898b8' }}>Legal &amp; Info</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <FaIcon className="fas fa-circle-info" style={{ fontSize: 15, color: '#6a6a88' }} />
+                <span style={{ fontSize: 14, fontWeight: 500, color: '#a8a8c4' }}>Legal &amp; Info</span>
               </span>
-              <i
-                className="fas fa-chevron-down"
-                style={{
-                  fontSize: 10, color: '#5a5a78',
-                  transform: infoOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.25s ease',
-                }}
-              ></i>
+              <ChevronDown size={15} color="#6a6a88" style={{ transform: infoOpen ? 'rotate(180deg)' : 'none', transition: 'transform .25s ease' }} />
             </button>
 
             {infoOpen && (
-              <div
-                id="sidebar-info-links"
-                style={{ marginTop: 4, marginLeft: 18, paddingLeft: 10, borderLeft: '1px solid rgba(255,255,255,0.06)' }}
-              >
+              <div id="sidebar-info-links" style={{ marginTop: 4, marginLeft: 20, paddingLeft: 10, borderLeft: '1px solid rgba(255,255,255,0.07)' }}>
                 {[...companyLinks, ...legalLinks].map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={onClose}
-                    style={{ textDecoration: 'none', display: 'block', padding: '8px 10px', borderRadius: 6 }}
-                    className="sidebar-info-link"
-                  >
-                    <span style={{ fontSize: 12.5, color: '#8888a8' }}>{link.label}</span>
+                  <Link key={link.href} href={link.href} onClick={onClose} className="drawer-sub"
+                    style={{ textDecoration: 'none', display: 'block', padding: '9px 10px', borderRadius: 8, fontSize: 13, color: '#9898b8' }}>
+                    {link.label}
                   </Link>
                 ))}
-                <style>{`
-                  .sidebar-info-link:hover { background: rgba(255,255,255,0.04); }
-                  .sidebar-info-link:hover span { color: #c9a84c !important; }
-                `}</style>
               </div>
             )}
           </div>
         </nav>
 
         {/* Logout */}
-        <div style={{
-          padding: '16px 12px',
-          borderTop: '1px solid rgba(255,255,255,0.04)',
-        }}>
-          <button
-            onClick={handleLogout}
-            style={{
-              width: '100%', padding: '11px 12px',
-              borderRadius: 8, background: 'rgba(239,68,68,0.08)',
-              border: '1px solid rgba(239,68,68,0.15)',
-              color: '#ef4444', fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10,
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(239,68,68,0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(239,68,68,0.08)';
-            }}
-          >
-            <i className="fas fa-right-from-bracket" style={{ fontSize: 13 }}></i>
-            Sign Out
+        <div style={{ padding: '14px 14px calc(14px + env(safe-area-inset-bottom, 0px))', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <button type="button" onClick={handleLogout} style={{
+            width: '100%', padding: '12px', borderRadius: 10, cursor: 'pointer',
+            background: 'rgba(234,57,67,0.08)', border: '1px solid rgba(234,57,67,0.2)',
+            color: '#ea3943', fontSize: 13.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}>
+            <LogOut size={16} /> Sign Out
           </button>
         </div>
-
       </aside>
-
     </>
   );
 }

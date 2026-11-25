@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -137,13 +139,13 @@ export default function DepositNowPage() {
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           Deposit Funds
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Send funds to the address below, then submit proof for review.
         </p>
       </div>
 
       <div className="deposit-section" style={{
-        background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+        background: '#13131f',
         border: '1px solid rgba(255,255,255,0.06)',
         borderRadius: 16, padding: '26px', marginBottom: 20,
       }}>
@@ -167,21 +169,21 @@ export default function DepositNowPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    <i className={m.icon} style={{ fontSize: 16, color: method === key ? m.color : '#9898b8' }}></i>
+                    <FaIcon className={m.icon} style={{ fontSize: 16, color: method === key ? m.color : '#9898b8' }} />
                     <span style={{ fontSize: 11, fontWeight: 600, color: method === key ? m.color : '#9898b8' }}>
                       {m.label}
                     </span>
                   </button>
                 ))}
               </div>
-              {errors.method && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.method}</span>}
+              {errors.method && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.method}</span>}
             </div>
 
             {/* Wallet address to send to */}
             {method && method !== 'PAYSTACK' && (
               loadingAddresses ? (
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
-                  <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }}></i>
+                  <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }} />
                 </div>
               ) : selectedAddress ? (
                 <div style={{
@@ -203,17 +205,17 @@ export default function DepositNowPage() {
                       onClick={copyAddress}
                       style={{
                         flexShrink: 0, padding: '7px 12px', borderRadius: 8, fontSize: 11.5, fontWeight: 700,
-                        background: copied ? 'rgba(34,197,94,0.15)' : 'rgba(201,168,76,0.15)',
-                        color: copied ? '#22c55e' : '#c9a84c',
-                        border: `1px solid ${copied ? 'rgba(34,197,94,0.3)' : 'rgba(201,168,76,0.3)'}`,
+                        background: copied ? 'rgba(22,199,132,0.15)' : 'rgba(201,168,76,0.15)',
+                        color: copied ? '#16c784' : '#c9a84c',
+                        border: `1px solid ${copied ? 'rgba(22,199,132,0.3)' : 'rgba(201,168,76,0.3)'}`,
                         cursor: 'pointer', whiteSpace: 'nowrap',
                       }}
                     >
-                      {copied ? <><i className="fas fa-check"></i> Copied</> : <><i className="fas fa-copy"></i> Copy</>}
+                      {copied ? <><FaIcon className="fas fa-check" /> Copied</> : <><FaIcon className="fas fa-copy" /> Copy</>}
                     </button>
                   </div>
                   {selectedAddress.network && (
-                    <div style={{ fontSize: 11, color: '#5a5a78', marginTop: 6 }}>Network: {selectedAddress.network}</div>
+                    <div style={{ fontSize: 11, color: '#6a6a88', marginTop: 6 }}>Network: {selectedAddress.network}</div>
                   )}
                   {selectedAddress.instructions && (
                     <div style={{ fontSize: 11.5, color: '#9898b8', marginTop: 8, lineHeight: 1.6 }}>{selectedAddress.instructions}</div>
@@ -233,7 +235,7 @@ export default function DepositNowPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: 13, fontWeight: 600, color: '#9898b8' }}>Amount (USD)</label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#5a5a78', fontSize: 14 }}>$</span>
+                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#6a6a88', fontSize: 14 }}>$</span>
                 <input
                   type="number" min="1" step="0.01"
                   value={amount}
@@ -242,18 +244,18 @@ export default function DepositNowPage() {
                   style={{
                     width: '100%', padding: '12px 14px 12px 28px', borderRadius: 10,
                     background: 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${errors.amount ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    border: `1px solid ${errors.amount ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
                     color: '#f0f0fa', fontSize: 14, outline: 'none',
                   }}
                 />
               </div>
-              {errors.amount && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.amount}</span>}
+              {errors.amount && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.amount}</span>}
             </div>
 
             {/* Tx hash (optional) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: 13, fontWeight: 600, color: '#9898b8' }}>
-                Transaction Hash <span style={{ color: '#5a5a78', fontWeight: 400 }}>(optional)</span>
+                Transaction Hash <span style={{ color: '#6a6a88', fontWeight: 400 }}>(optional)</span>
               </label>
               <input
                 value={txHash}
@@ -273,20 +275,20 @@ export default function DepositNowPage() {
               <div
                 onClick={() => fileRef.current?.click()}
                 style={{
-                  border: `1.5px dashed ${errors.proof ? 'rgba(239,68,68,0.5)' : proof ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.15)'}`,
+                  border: `1.5px dashed ${errors.proof ? 'rgba(234,57,67,0.5)' : proof ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.15)'}`,
                   borderRadius: 12, padding: proof ? 12 : '24px 16px', textAlign: 'center', cursor: 'pointer',
                   background: proof ? 'rgba(201,168,76,0.04)' : 'rgba(255,255,255,0.02)',
                 }}
               >
                 {proof ? (
                   <div style={{ fontSize: 13, color: '#f0f0fa', fontWeight: 600 }}>
-                    <i className="fas fa-file-check" style={{ color: '#c9a84c', marginRight: 8 }}></i>
+                    <FaIcon className="fas fa-file-check" style={{ color: '#c9a84c', marginRight: 8 }} />
                     {proof.name}
-                    <div style={{ fontSize: 11, color: '#5a5a78', fontWeight: 400, marginTop: 4 }}>Tap to change</div>
+                    <div style={{ fontSize: 11, color: '#6a6a88', fontWeight: 400, marginTop: 4 }}>Tap to change</div>
                   </div>
                 ) : (
                   <>
-                    <i className="fas fa-cloud-arrow-up" style={{ fontSize: 20, color: '#5a5a78', marginBottom: 6, display: 'block' }}></i>
+                    <FaIcon className="fas fa-cloud-arrow-up" style={{ fontSize: 20, color: '#6a6a88', marginBottom: 6, display: 'block' }} />
                     <div style={{ fontSize: 12.5, color: '#9898b8' }}>Screenshot or receipt of your transaction</div>
                   </>
                 )}
@@ -296,7 +298,7 @@ export default function DepositNowPage() {
                   style={{ display: 'none' }}
                 />
               </div>
-              {errors.proof && <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.proof}</span>}
+              {errors.proof && <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.proof}</span>}
             </div>
 
             <button
@@ -310,10 +312,10 @@ export default function DepositNowPage() {
               }}
             >
               {paystackLoading
-                ? <><i className="fas fa-spinner fa-spin"></i> Redirecting to Paystack...</>
+                ? <><FaIcon className="fas fa-spinner fa-spin" /> Redirecting to Paystack...</>
                 : submitting
-                ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
-                : <><i className="fas fa-paper-plane"></i> Submit Deposit</>}
+                ? <><FaIcon className="fas fa-spinner fa-spin" /> Submitting...</>
+                : <><FaIcon className="fas fa-paper-plane" /> Submit Deposit</>}
             </button>
           </div>
         </form>

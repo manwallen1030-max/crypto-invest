@@ -1,38 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { TrendingUp } from 'lucide-react';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
 import DashboardFooter from '@/components/dashboard/DashboardFooter';
+import BottomNav from '@/components/dashboard/BottomNav';
+import MarketTicker from '@/components/market/MarketTicker';
 import AuthSession from '@/components/shared/AuthSession';
 import { NotificationBadgesProvider } from '@/lib/notificationBadges';
+import { MarketProvider } from '@/lib/market';
+
 export default function DashboardLayout({ children }) {
-  const router    = useRouter();
-  const [user,    setUser]    = useState(null);
+  const router = useRouter();
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
   useEffect(() => {
-    // Check if user is logged in
     const stored = localStorage.getItem('vaultex_user');
-    const token  = localStorage.getItem('vaultex_token');
-
+    const token = localStorage.getItem('vaultex_token');
     if (!stored || !token) {
       router.replace('/login');
       return;
     }
-
     setUser(JSON.parse(stored));
     setLoading(false);
   }, [router]);
 
   useEffect(() => {
-    // The Settings page updates localStorage directly (e.g. after an avatar
-    // upload or profile edit) and then dispatches this event so the navbar
-    // and sidebar — which hold their own copy of `user` in this layout's
-    // state — pick up the change immediately, without needing a full page
-    // reload to re-read localStorage.
+    // The Settings page and refreshUser() update localStorage directly and then
+    // dispatch this event so the navbar, drawer wallet and balance chip — which
+    // hold their own copy of `user` here — update without a reload.
     const onUserUpdated = () => {
       const stored = localStorage.getItem('vaultex_user');
       if (stored) setUser(JSON.parse(stored));
@@ -44,79 +45,37 @@ export default function DashboardLayout({ children }) {
   if (loading) {
     return (
       <div style={{
-        minHeight: '100vh',
-        background: '#0a0a0f',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: 16,
+        minHeight: '100vh', background: '#0a0a0f', display: 'flex',
+        alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16,
       }}>
         <div style={{
-          width: 48, height: 48, borderRadius: 12,
-          background: 'linear-gradient(135deg, #c9a84c, #a8722a)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 30px rgba(201,168,76,0.3)',
+          width: 52, height: 52, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'linear-gradient(135deg, #c9a84c, #a8722a)', boxShadow: '0 0 36px rgba(201,168,76,0.35)',
         }}>
-          <i className="fas fa-chart-line" style={{ color: '#0a0a0f', fontSize: 20 }}></i>
+          <TrendingUp size={24} color="#0a0a0f" strokeWidth={2.6} />
         </div>
-        <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }}></i>
+        <div className="dash-spin" style={{ width: 20, height: 20, borderRadius: '50%', border: '2px solid rgba(201,168,76,0.25)', borderTopColor: '#c9a84c' }} />
       </div>
     );
   }
 
   return (
     <NotificationBadgesProvider>
-    <div style={{
-      minHeight: '100vh',
-      background: '#0a0a0f',
-      display: 'flex',
-    }}>
-      {/* Sidebar */}
-      <DashboardSidebar
-        user={user}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <MarketProvider>
+        <div className="dash-root">
+          <DashboardSidebar user={user} isOpen={sidebarOpen} onClose={closeSidebar} />
 
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.6)',
-            zIndex: 40,
-            backdropFilter: 'blur(4px)',
-          }}
-        />
-      )}
+          <div className="dash-shell">
+            <DashboardNavbar user={user} onMenuClick={() => setSidebarOpen(true)} />
+            <MarketTicker />
+            <main className="dash-main">{children}</main>
+            <AuthSession />
+            <DashboardFooter />
+          </div>
 
-      {/* Main content */}
-      <div style={{
-        flex: 1,
-        marginLeft: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        overflow: 'hidden',
-      }}>
-        <DashboardNavbar
-          user={user}
-          onMenuClick={() => setSidebarOpen(true)}
-        />
-        <main style={{
-          flex: 1,
-          padding: '24px',
-          overflowY: 'auto',
-          maxWidth: '100%',
-        }}>
-          {children}
-        </main>
-        <AuthSession />
-        <DashboardFooter />
-      </div>
-    </div>
+          <BottomNav />
+        </div>
+      </MarketProvider>
     </NotificationBadgesProvider>
   );
 }

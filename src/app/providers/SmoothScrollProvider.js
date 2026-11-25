@@ -1,10 +1,9 @@
-
 'use client';
 
-// Lenis gives us buttery smooth scrolling across the entire site.
-// We wrap the whole app in this so every page benefits from it.
-// GSAP is also integrated here so scroll-triggered animations
-// know the exact scroll position Lenis reports.
+// Lenis gives us buttery smooth scrolling across the entire site, driven by
+// GSAP's ticker so ScrollTrigger animations and Lenis never drift apart.
+// The instance is exposed as window.__lenis so the dashboard drawer can pause
+// page scrolling while it is open and page transitions can scroll to top.
 
 import { useEffect } from 'react';
 import Lenis from 'lenis';
@@ -15,28 +14,29 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScrollProvider({ children }) {
   useEffect(() => {
-    // Create the Lenis instance
-    const lenis = new Lenis({
-      duration: 1.4,           // scroll animation duration in seconds
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo ease
-      orientation: 'vertical',
-      smoothWheel: true,
-    });
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-    // Tell GSAP ScrollTrigger to use Lenis scroll position
-    // Without this, ScrollTrigger uses native scroll — they'd be out of sync
+    const lenis = new Lenis({
+      duration: 1.25,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: !reduce,
+      wheelMultiplier: 0.95,
+      touchMultiplier: 1.4,
+      anchors: true,
+    });
+    window.__lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000); // GSAP runs in seconds, Lenis needs milliseconds
-    });
-
-    gsap.ticker.lagSmoothing(0); // prevent GSAP from skipping frames
+    const tick = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      // Cleanup on unmount
+      gsap.ticker.remove(tick);
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      if (window.__lenis === lenis) window.__lenis = null;
     };
   }, []);
 

@@ -12,5 +12,7 @@ export function dollarsToCents(dollars) {
 }
 
 export function formatCurrency(cents) {
-  return `$${centsToDollars(cents).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const dollars = centsToDollars(cents);
+  const sign = dollars < 0 ? '-' : '';
+  return `${sign}$${Math.abs(dollars).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }

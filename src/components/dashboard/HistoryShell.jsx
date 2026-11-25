@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 // Shared frame for the three History pages (Investment, Deposit, Withdrawal).
 //
 // It loads the user's records from `endpoint`, shows them under status filter
@@ -101,7 +103,7 @@ export default function HistoryShell({
           <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
             {title}
           </h1>
-          <p style={{ fontSize: 13.5, color: '#5a5a78' }}>{subtitle}</p>
+          <p style={{ fontSize: 13.5, color: '#6a6a88' }}>{subtitle}</p>
         </div>
         {actionHref && (
           <Link href={actionHref} style={{
@@ -109,7 +111,7 @@ export default function HistoryShell({
             background: 'linear-gradient(135deg, #c9a84c, #a8722a)', color: '#0a0a0f',
             textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
           }}>
-            <i className="fas fa-plus"></i>
+            <FaIcon className="fas fa-plus" />
             {actionLabel}
           </Link>
         )}
@@ -145,14 +147,14 @@ export default function HistoryShell({
       <div className="hs-section">
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-            <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }}></i>
+            <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }} />
           </div>
         ) : visible.length === 0 ? (
           <div style={{
             textAlign: 'center', padding: '48px 20px',
             background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16,
           }}>
-            <i className={icon} style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }}></i>
+            <FaIcon className={icon} style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }} />
             <div style={{ fontSize: 14, color: '#9898b8' }}>
               {filter === 'ALL'
                 ? `No ${noun} yet`
@@ -161,7 +163,7 @@ export default function HistoryShell({
           </div>
         ) : (
           <div style={{
-            background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+            background: '#13131f',
             border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden',
           }}>
             {visible.map((item, i) => (

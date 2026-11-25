@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -13,10 +15,10 @@ const DOC_TYPES = [
 ];
 
 const STATUS_META = {
-  NOT_SUBMITTED:       { label: 'Not Submitted',       color: '#5a5a78', icon: 'fas fa-circle-minus' },
+  NOT_SUBMITTED:       { label: 'Not Submitted',       color: '#6a6a88', icon: 'fas fa-circle-minus' },
   PENDING:              { label: 'Under Review',        color: '#eab308', icon: 'fas fa-clock' },
-  APPROVED:             { label: 'Verified',             color: '#22c55e', icon: 'fas fa-circle-check' },
-  REJECTED:              { label: 'Rejected',             color: '#ef4444', icon: 'fas fa-circle-xmark' },
+  APPROVED:             { label: 'Verified',             color: '#16c784', icon: 'fas fa-circle-check' },
+  REJECTED:              { label: 'Rejected',             color: '#ea3943', icon: 'fas fa-circle-xmark' },
   RESUBMIT_REQUESTED:     { label: 'Resubmission Needed',  color: '#f97316', icon: 'fas fa-rotate' },
 };
 
@@ -30,7 +32,7 @@ function FileDropSlot({ label, hint, file, onChange, error, accept }) {
       <div
         onClick={() => inputRef.current?.click()}
         style={{
-          border: `1.5px dashed ${error ? 'rgba(239,68,68,0.5)' : file ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.15)'}`,
+          border: `1.5px dashed ${error ? 'rgba(234,57,67,0.5)' : file ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.15)'}`,
           borderRadius: 12,
           padding: file ? 12 : '28px 16px',
           textAlign: 'center',
@@ -50,19 +52,19 @@ function FileDropSlot({ label, hint, file, onChange, error, accept }) {
                 background: 'rgba(201,168,76,0.1)', display: 'flex',
                 alignItems: 'center', justifyContent: 'center',
               }}>
-                <i className="fas fa-file-pdf" style={{ color: '#c9a84c', fontSize: 18 }}></i>
+                <FaIcon className="fas fa-file-pdf" style={{ color: '#c9a84c', fontSize: 18 }} />
               </div>
             )}
             <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, color: '#f0f0fa', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {file.name}
               </div>
-              <div style={{ fontSize: 11, color: '#5a5a78' }}>Tap to change</div>
+              <div style={{ fontSize: 11, color: '#6a6a88' }}>Tap to change</div>
             </div>
           </div>
         ) : (
           <>
-            <i className="fas fa-cloud-arrow-up" style={{ fontSize: 22, color: '#5a5a78', marginBottom: 8, display: 'block' }}></i>
+            <FaIcon className="fas fa-cloud-arrow-up" style={{ fontSize: 22, color: '#6a6a88', marginBottom: 8, display: 'block' }} />
             <div style={{ fontSize: 12.5, color: '#9898b8' }}>{hint}</div>
           </>
         )}
@@ -75,8 +77,8 @@ function FileDropSlot({ label, hint, file, onChange, error, accept }) {
         />
       </div>
       {error && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ef4444' }}>
-          <i className="fas fa-circle-exclamation" style={{ fontSize: 11 }}></i>{error}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ea3943' }}>
+          <FaIcon className="fas fa-circle-exclamation" style={{ fontSize: 11 }} />{error}
         </div>
       )}
     </div>
@@ -172,7 +174,7 @@ export default function KycPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }}></i>
+        <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 20 }} />
       </div>
     );
   }
@@ -187,14 +189,14 @@ export default function KycPage() {
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           Identity Verification
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Verify your identity to unlock full withdrawal limits.
         </p>
       </div>
 
       {/* Status card */}
       <div className="kyc-section" style={{
-        background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+        background: '#13131f',
         border: `1px solid ${meta.color}30`,
         borderRadius: 16,
         padding: '24px 26px',
@@ -206,11 +208,11 @@ export default function KycPage() {
           background: `${meta.color}18`, border: `1px solid ${meta.color}40`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <i className={meta.icon} style={{ fontSize: 18, color: meta.color }}></i>
+          <FaIcon className={meta.icon} style={{ fontSize: 18, color: meta.color }} />
         </div>
         <div style={{ flex: 1, minWidth: 200 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: meta.color }}>{meta.label}</div>
-          <div style={{ fontSize: 12.5, color: '#5a5a78', marginTop: 2 }}>
+          <div style={{ fontSize: 12.5, color: '#6a6a88', marginTop: 2 }}>
             {kycStatus === 'NOT_SUBMITTED' && "You haven't submitted any verification documents yet."}
             {kycStatus === 'PENDING' && `Submitted ${latest ? new Date(latest.createdAt).toLocaleDateString() : ''} — our team typically reviews within 24–48 hours.`}
             {kycStatus === 'APPROVED' && 'Your identity has been verified. Full account limits are unlocked.'}
@@ -229,7 +231,7 @@ export default function KycPage() {
               display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
             }}
           >
-            <i className="fas fa-upload" style={{ fontSize: 12 }}></i>
+            <FaIcon className="fas fa-upload" style={{ fontSize: 12 }} />
             {kycStatus === 'NOT_SUBMITTED' ? 'Start Verification' : 'Resubmit'}
           </button>
         )}
@@ -244,7 +246,7 @@ export default function KycPage() {
             const activeIdx = kycStatus === 'PENDING' ? 1 : (kycStatus === 'APPROVED' || kycStatus === 'REJECTED') ? 2 : 0;
             const isDone = i < activeIdx || (kycStatus === 'APPROVED' && i <= 2);
             const isActive = i === activeIdx;
-            const stepColor = (kycStatus === 'REJECTED' && i === 2) ? '#ef4444'
+            const stepColor = (kycStatus === 'REJECTED' && i === 2) ? '#ea3943'
               : (isDone || isActive) ? '#c9a84c' : '#3a3a52';
             return (
               <div key={step} style={{ display: 'flex', alignItems: 'center', flex: i < 2 ? 1 : 'none' }}>
@@ -271,7 +273,7 @@ export default function KycPage() {
       {/* Upload form */}
       {showForm && canSubmit && (
         <div className="kyc-section" style={{
-          background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+          background: '#13131f',
           border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: 16,
           padding: '26px',
@@ -287,8 +289,8 @@ export default function KycPage() {
                   style={{
                     width: '100%', padding: '12px 14px', borderRadius: 10,
                     background: 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${errors.docType ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                    color: docType ? '#f0f0fa' : '#5a5a78', fontSize: 14, outline: 'none',
+                    border: `1px solid ${errors.docType ? 'rgba(234,57,67,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    color: docType ? '#f0f0fa' : '#6a6a88', fontSize: 14, outline: 'none',
                   }}
                 >
                   <option value="">Select a document type...</option>
@@ -297,8 +299,8 @@ export default function KycPage() {
                   ))}
                 </select>
                 {errors.docType && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ef4444' }}>
-                    <i className="fas fa-circle-exclamation" style={{ fontSize: 11 }}></i>{errors.docType}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ea3943' }}>
+                    <FaIcon className="fas fa-circle-exclamation" style={{ fontSize: 11 }} />{errors.docType}
                   </div>
                 )}
               </div>
@@ -345,8 +347,8 @@ export default function KycPage() {
                   }}
                 >
                   {submitting
-                    ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
-                    : <><i className="fas fa-paper-plane"></i> Submit for Review</>}
+                    ? <><FaIcon className="fas fa-spinner fa-spin" /> Submitting...</>
+                    : <><FaIcon className="fas fa-paper-plane" /> Submit for Review</>}
                 </button>
                 <button
                   type="button"
@@ -373,7 +375,7 @@ export default function KycPage() {
           padding: '14px 16px', borderRadius: 12,
           background: 'rgba(201,168,76,0.04)', border: '1px solid rgba(201,168,76,0.12)',
         }}>
-          <i className="fas fa-circle-info" style={{ color: '#c9a84c', fontSize: 13, marginTop: 2 }}></i>
+          <FaIcon className="fas fa-circle-info" style={{ color: '#c9a84c', fontSize: 13, marginTop: 2 }} />
           <span style={{ fontSize: 12.5, color: '#9898b8', lineHeight: 1.6 }}>
             All documents are transmitted securely and only used to verify your identity.
             We never share your documents with third parties.

@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -7,13 +9,13 @@ import toast from 'react-hot-toast';
 import { formatCurrency } from '@/lib/currency';
 
 const TYPE_META = {
-  DEPOSIT:              { label: 'Deposit',      icon: 'fas fa-arrow-down',       color: '#22c55e' },
-  WITHDRAWAL:           { label: 'Withdrawal',    icon: 'fas fa-arrow-up',          color: '#ef4444' },
-  INVESTMENT:           { label: 'Investment',      icon: 'fas fa-seedling',           color: '#818cf8' },
+  DEPOSIT:              { label: 'Deposit',      icon: 'fas fa-arrow-down',       color: '#16c784' },
+  WITHDRAWAL:           { label: 'Withdrawal',    icon: 'fas fa-arrow-up',          color: '#ea3943' },
+  INVESTMENT:           { label: 'Investment',      icon: 'fas fa-seedling',           color: '#34b8a6' },
   PROFIT:               { label: 'Profit',            icon: 'fas fa-chart-line',           color: '#c9a84c' },
   REFERRAL_COMMISSION:  { label: 'Referral Bonus',      icon: 'fas fa-user-plus',              color: '#f97316' },
   REFUND:               { label: 'Refund',                icon: 'fas fa-rotate-left',              color: '#eab308' },
-  ADJUSTMENT:            { label: 'Adjustment',              icon: 'fas fa-sliders',                    color: '#5a5a78' },
+  ADJUSTMENT:            { label: 'Adjustment',              icon: 'fas fa-sliders',                    color: '#6a6a88' },
 };
 
 const FILTERS = ['ALL', 'DEPOSIT', 'WITHDRAWAL', 'INVESTMENT', 'PROFIT', 'REFERRAL_COMMISSION', 'REFUND', 'ADJUSTMENT'];
@@ -58,7 +60,7 @@ export default function TransactionsPage() {
         <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0fa', marginBottom: 4, letterSpacing: '-0.02em' }}>
           Transaction History
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           A complete record of everything that&apos;s happened on your account.
         </p>
       </div>
@@ -92,19 +94,19 @@ export default function TransactionsPage() {
       <div className="tx-section">
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-            <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }}></i>
+            <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 18 }} />
           </div>
         ) : transactions.length === 0 ? (
           <div style={{
             textAlign: 'center', padding: '48px 20px',
             background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16,
           }}>
-            <i className="fas fa-receipt" style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }}></i>
+            <FaIcon className="fas fa-receipt" style={{ fontSize: 26, color: '#3a3a52', marginBottom: 12, display: 'block' }} />
             <div style={{ fontSize: 14, color: '#9898b8' }}>No transactions to show</div>
           </div>
         ) : (
           <div style={{
-            background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+            background: '#13131f',
             border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden',
           }}>
             {transactions.map((tx, i) => {
@@ -120,23 +122,23 @@ export default function TransactionsPage() {
                     background: `${meta.color}15`, border: `1px solid ${meta.color}30`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <i className={meta.icon} style={{ fontSize: 14, color: meta.color }}></i>
+                    <FaIcon className={meta.icon} style={{ fontSize: 14, color: meta.color }} />
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, color: '#f0f0fa' }}>
                       {tx.description || meta.label}
                     </div>
-                    <div style={{ fontSize: 11.5, color: '#5a5a78', marginTop: 2 }}>
+                    <div style={{ fontSize: 11.5, color: '#6a6a88', marginTop: 2 }}>
                       {new Date(tx.createdAt).toLocaleString()}
                     </div>
                   </div>
 
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: isPositive ? '#22c55e' : '#ef4444' }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: isPositive ? '#16c784' : '#ea3943' }}>
                       {isPositive ? '+' : ''}{formatCurrency(tx.amount)}
                     </div>
-                    <div style={{ fontSize: 10.5, color: '#5a5a78', marginTop: 2 }}>
+                    <div style={{ fontSize: 10.5, color: '#6a6a88', marginTop: 2 }}>
                       Bal: {formatCurrency(tx.balanceAfter)}
                     </div>
                   </div>

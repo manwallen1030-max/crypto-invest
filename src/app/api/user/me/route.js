@@ -27,6 +27,7 @@ export async function GET(request) {
         totalWithdrawn: true,
         totalProfit: true,
         referralCode: true,
+        createdAt: true,
       },
     }),
     prisma.investment.count({ where: { userId: session.id, status: 'ACTIVE' } }),

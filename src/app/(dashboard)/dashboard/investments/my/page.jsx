@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
@@ -78,7 +80,7 @@ export default function MyInvestmentsPage() {
           }}>
             My Investments
           </h1>
-          <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+          <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
             Your active and pending investments. Completed and past ones are in Investment History.
           </p>
         </div>
@@ -88,7 +90,7 @@ export default function MyInvestmentsPage() {
           background: 'linear-gradient(135deg, #c9a84c, #a8722a)', color: '#0a0a0f',
           textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
         }}>
-          <i className="fas fa-plus"></i>
+          <FaIcon className="fas fa-plus" />
           New Investment
         </Link>
       </div>
@@ -96,7 +98,7 @@ export default function MyInvestmentsPage() {
       <div className="inv-section">
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '30px 0' }}>
-            <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }}></i>
+            <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }} />
           </div>
         ) : current.length === 0 ? (
           <div style={{
@@ -105,14 +107,14 @@ export default function MyInvestmentsPage() {
             border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: 16,
           }}>
-            <i className="fas fa-chart-line" style={{
+            <FaIcon className="fas fa-chart-line" style={{
               fontSize: 28, color: '#3a3a52',
               marginBottom: 12, display: 'block',
-            }}></i>
+            }} />
             <div style={{ fontSize: 14, color: '#9898b8', marginBottom: 4 }}>
               No active investments
             </div>
-            <div style={{ fontSize: 12, color: '#5a5a78' }}>
+            <div style={{ fontSize: 12, color: '#6a6a88' }}>
               Choose &quot;Invest Now&quot; to get started
             </div>
           </div>
@@ -123,17 +125,11 @@ export default function MyInvestmentsPage() {
               const remaining = daysRemaining(inv.maturityDate);
               return (
                 <div key={inv.id} style={{
-                  background: 'linear-gradient(145deg, rgba(20,20,36,0.85), rgba(12,12,22,0.9))',
+                  background: '#13131f',
                   border: '1px solid rgba(255,255,255,0.06)',
                   borderRadius: 14, padding: '18px',
                   position: 'relative', overflow: 'hidden',
                 }}>
-                  {/* Top accent */}
-                  <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                    background: `linear-gradient(90deg, transparent, ${STATUS_META[inv.status]?.color || '#c9a84c'}, transparent)`,
-                  }} />
-
                   {/* Header row */}
                   <div style={{
                     display: 'flex', alignItems: 'flex-start',
@@ -146,7 +142,7 @@ export default function MyInvestmentsPage() {
                       }}>
                         {inv.planName}
                       </div>
-                      <div style={{ fontSize: 11.5, color: '#5a5a78' }}>
+                      <div style={{ fontSize: 11.5, color: '#6a6a88' }}>
                         Submitted {new Date(inv.createdAt).toLocaleDateString()}
                         {inv.txHash && (
                           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
@@ -174,7 +170,7 @@ export default function MyInvestmentsPage() {
                       </div>
                       <div style={{
                         display: 'flex', justifyContent: 'space-between',
-                        fontSize: 11, color: '#5a5a78', marginBottom: 12,
+                        fontSize: 11, color: '#6a6a88', marginBottom: 12,
                       }}>
                         <span>{progress}% complete</span>
                         <span>{remaining} day{remaining === 1 ? '' : 's'} remaining</span>
@@ -192,7 +188,7 @@ export default function MyInvestmentsPage() {
                   }}>
                     <div>
                       <div style={{
-                        fontSize: 10, color: '#5a5a78',
+                        fontSize: 10, color: '#6a6a88',
                         textTransform: 'uppercase', letterSpacing: '0.06em',
                         marginBottom: 3,
                       }}>
@@ -204,19 +200,19 @@ export default function MyInvestmentsPage() {
                     </div>
                     <div>
                       <div style={{
-                        fontSize: 10, color: '#5a5a78',
+                        fontSize: 10, color: '#6a6a88',
                         textTransform: 'uppercase', letterSpacing: '0.06em',
                         marginBottom: 3,
                       }}>
                         Expected Profit
                       </div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#22c55e' }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#16c784' }}>
                         +{formatCurrency(inv.expectedProfit)}
                       </div>
                     </div>
                     <div>
                       <div style={{
-                        fontSize: 10, color: '#5a5a78',
+                        fontSize: 10, color: '#6a6a88',
                         textTransform: 'uppercase', letterSpacing: '0.06em',
                         marginBottom: 3,
                       }}>
@@ -240,9 +236,9 @@ export default function MyInvestmentsPage() {
                       border: '1px solid rgba(234,179,8,0.15)',
                       fontSize: 12, color: '#9898b8',
                     }}>
-                      <i className="fas fa-clock" style={{
+                      <FaIcon className="fas fa-clock" style={{
                         color: '#eab308', marginRight: 8,
-                      }}></i>
+                      }} />
                       Waiting for admin approval.
                       This usually takes a few hours.
                     </div>

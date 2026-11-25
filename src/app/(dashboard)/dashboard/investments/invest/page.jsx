@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
@@ -140,7 +142,7 @@ export default function InvestNowPage() {
         }}>
           Invest Now
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Available balance:{' '}
           <span style={{ color: '#c9a84c', fontWeight: 700 }}>{formatCurrency(balance)}</span>
           {balance <= 0 && (
@@ -156,17 +158,12 @@ export default function InvestNowPage() {
 
       {/* Investment Form */}
       <div className="inv-section" style={{
-        background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+        background: '#13131f',
         border: '1px solid rgba(201,168,76,0.2)',
         borderRadius: 16, padding: '28px',
         marginBottom: 24, position: 'relative', overflow: 'hidden',
       }}>
         {/* Top accent */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-          background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)',
-        }} />
-
         <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0fa', marginBottom: 20 }}>
           Submit Investment Request
         </div>
@@ -181,7 +178,7 @@ export default function InvestNowPage() {
               </label>
               {loadingPlans ? (
                 <div style={{ display: 'flex', justifyContent: 'center', padding: 16 }}>
-                  <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }}></i>
+                  <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c' }} />
                 </div>
               ) : plans.length === 0 ? (
                 <div style={{ fontSize: 13, color: '#9898b8', padding: '8px 0' }}>
@@ -223,7 +220,7 @@ export default function InvestNowPage() {
                       <div style={{ fontSize: 20, fontWeight: 800, color: '#c9a84c', marginBottom: 2 }}>
                         {p.rate}%
                       </div>
-                      <div style={{ fontSize: 11, color: '#5a5a78' }}>
+                      <div style={{ fontSize: 11, color: '#6a6a88' }}>
                         {p.duration} days · Min {formatCurrency(p.minAmount)}
                       </div>
                     </button>
@@ -231,7 +228,7 @@ export default function InvestNowPage() {
                 </div>
               )}
               {errors.planId && (
-                <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.planId}</span>
+                <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.planId}</span>
               )}
             </div>
 
@@ -244,7 +241,7 @@ export default function InvestNowPage() {
                 <span style={{
                   position: 'absolute', left: 14, top: '50%',
                   transform: 'translateY(-50%)',
-                  color: '#5a5a78', fontSize: 14,
+                  color: '#6a6a88', fontSize: 14,
                 }}>$</span>
                 <input
                   type="number" min="1" step="0.01"
@@ -259,17 +256,17 @@ export default function InvestNowPage() {
                     borderRadius: 10,
                     background: 'rgba(255,255,255,0.04)',
                     border: `1px solid ${errors.amount
-                      ? 'rgba(239,68,68,0.5)'
+                      ? 'rgba(234,57,67,0.5)'
                       : 'rgba(255,255,255,0.08)'}`,
                     color: '#f0f0fa', fontSize: 14, outline: 'none',
                   }}
                 />
               </div>
               {errors.amount && (
-                <span style={{ fontSize: 12, color: '#ef4444' }}>{errors.amount}</span>
+                <span style={{ fontSize: 12, color: '#ea3943' }}>{errors.amount}</span>
               )}
               {plan && (
-                <span style={{ fontSize: 11.5, color: '#5a5a78' }}>
+                <span style={{ fontSize: 11.5, color: '#6a6a88' }}>
                   This plan accepts {formatCurrency(plan.minAmount)}
                   {plan.maxAmount ? ` to ${formatCurrency(plan.maxAmount)}` : ' and above'}.
                 </span>
@@ -290,7 +287,7 @@ export default function InvestNowPage() {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#9898b8' }}>
                     <span>Expected profit</span>
-                    <span style={{ color: '#22c55e', fontWeight: 700 }}>
+                    <span style={{ color: '#16c784', fontWeight: 700 }}>
                       +{formatCurrency(expProfit)}
                     </span>
                   </div>
@@ -302,7 +299,7 @@ export default function InvestNowPage() {
                     <span>Total at maturity</span>
                     <span>{formatCurrency(expReturn)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#5a5a78' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#6a6a88' }}>
                     <span>Duration</span>
                     <span>{plan.duration} days</span>
                   </div>
@@ -313,11 +310,11 @@ export default function InvestNowPage() {
             {/* Info box */}
             <div style={{
               padding: '12px 16px', borderRadius: 10,
-              background: 'rgba(129,140,248,0.06)',
-              border: '1px solid rgba(129,140,248,0.15)',
+              background: 'rgba(52,184,166,0.06)',
+              border: '1px solid rgba(52,184,166,0.15)',
               fontSize: 12.5, color: '#9898b8', lineHeight: 1.6,
             }}>
-              <i className="fas fa-circle-info" style={{ color: '#818cf8', marginRight: 8 }}></i>
+              <FaIcon className="fas fa-circle-info" style={{ color: '#34b8a6', marginRight: 8 }} />
               The amount is taken from your available balance when you submit. Admin will
               review and activate your investment, usually within a few hours. If it is
               rejected, the amount is returned to your balance.
@@ -342,8 +339,8 @@ export default function InvestNowPage() {
               }}
             >
               {submitting
-                ? <><i className="fas fa-spinner fa-spin"></i> Submitting...</>
-                : <><i className="fas fa-paper-plane"></i> Submit Investment Request</>}
+                ? <><FaIcon className="fas fa-spinner fa-spin" /> Submitting...</>
+                : <><FaIcon className="fas fa-paper-plane" /> Submit Investment Request</>}
             </button>
 
           </div>

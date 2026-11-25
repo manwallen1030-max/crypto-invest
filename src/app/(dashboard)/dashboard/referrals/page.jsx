@@ -1,5 +1,7 @@
 'use client';
 
+
+import FaIcon from '@/components/ui/FaIcon';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -51,7 +53,7 @@ export default function ReferralsPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-        <i className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 22 }}></i>
+        <FaIcon className="fas fa-spinner fa-spin" style={{ color: '#c9a84c', fontSize: 22 }} />
       </div>
     );
   }
@@ -68,7 +70,7 @@ export default function ReferralsPage() {
         }}>
           Referrals
         </h1>
-        <p style={{ fontSize: 13.5, color: '#5a5a78' }}>
+        <p style={{ fontSize: 13.5, color: '#6a6a88' }}>
           Invite friends and earn commission when they invest.
         </p>
       </div>
@@ -86,14 +88,14 @@ export default function ReferralsPage() {
             label: 'Total Referrals',
             value: data?.totalReferrals ?? 0,
             icon:  'fas fa-users',
-            color: '#818cf8',
+            color: '#34b8a6',
             format: (v) => v,
           },
           {
             label: 'Total Earned',
             value: data?.totalEarned ?? 0,
             icon:  'fas fa-trophy',
-            color: '#22c55e',
+            color: '#16c784',
             format: (v) => formatCurrency(v),
           },
           {
@@ -108,7 +110,7 @@ export default function ReferralsPage() {
             key={i}
             className="ref-card"
             style={{
-              background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+              background: '#13131f',
               border: '1px solid rgba(255,255,255,0.06)',
               borderRadius: '4px 16px 16px 16px',
               padding: '20px',
@@ -117,19 +119,15 @@ export default function ReferralsPage() {
             }}
           >
             <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-              background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)`,
-            }} />
-            <div style={{
               width: 38, height: 38, borderRadius: 10,
               background: `${stat.color}15`,
               border: `1px solid ${stat.color}25`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               marginBottom: 12,
             }}>
-              <i className={stat.icon} style={{ color: stat.color, fontSize: 15 }}></i>
+              <FaIcon className={stat.icon} style={{ color: stat.color, fontSize: 15 }} />
             </div>
-            <div style={{ fontSize: 11, color: '#5a5a78', marginBottom: 4 }}>
+            <div style={{ fontSize: 11, color: '#6a6a88', marginBottom: 4 }}>
               {stat.label}
             </div>
             <div style={{ fontSize: 22, fontWeight: 800, color: '#f0f0fa' }}>
@@ -143,7 +141,7 @@ export default function ReferralsPage() {
       <div
         className="ref-card"
         style={{
-          background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+          background: '#13131f',
           border: '1px solid rgba(201,168,76,0.2)',
           borderRadius: '4px 20px 20px 20px',
           padding: '28px',
@@ -153,24 +151,19 @@ export default function ReferralsPage() {
         }}
       >
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-          background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)',
-        }} />
-
-        <div style={{
           fontSize: 15, fontWeight: 700,
           color: '#f0f0fa', marginBottom: 6,
         }}>
           Your Referral Link
         </div>
-        <p style={{ fontSize: 13, color: '#5a5a78', marginBottom: 20, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13, color: '#6a6a88', marginBottom: 20, lineHeight: 1.6 }}>
           Share this link with friends. When they register and invest,
           you earn a commission automatically.
         </p>
 
         {/* Referral link */}
         <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: '#5a5a78', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <div style={{ fontSize: 11, color: '#6a6a88', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Referral Link
           </div>
           <div style={{
@@ -193,16 +186,16 @@ export default function ReferralsPage() {
                 padding: '11px 18px',
                 borderRadius: 10, fontSize: 13, fontWeight: 700,
                 background: copied
-                  ? 'rgba(34,197,94,0.15)'
+                  ? 'rgba(22,199,132,0.15)'
                   : 'linear-gradient(135deg, #c9a84c, #a8722a)',
-                color: copied ? '#22c55e' : '#0a0a0f',
-                border: copied ? '1px solid rgba(34,197,94,0.3)' : 'none',
+                color: copied ? '#16c784' : '#0a0a0f',
+                border: copied ? '1px solid rgba(22,199,132,0.3)' : 'none',
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 7,
                 transition: 'all 0.2s ease',
               }}
             >
-              <i className={copied ? 'fas fa-check' : 'fas fa-copy'}></i>
+              <FaIcon className={copied ? 'fas fa-check' : 'fas fa-copy'} />
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
@@ -210,7 +203,7 @@ export default function ReferralsPage() {
 
         {/* Referral code */}
         <div>
-          <div style={{ fontSize: 11, color: '#5a5a78', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <div style={{ fontSize: 11, color: '#6a6a88', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Referral Code
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -244,7 +237,7 @@ export default function ReferralsPage() {
                 e.currentTarget.style.color = '#9898b8';
               }}
             >
-              <i className="fas fa-copy"></i> Copy Code
+              <FaIcon className="fas fa-copy" /> Copy Code
             </button>
           </div>
         </div>
@@ -252,11 +245,11 @@ export default function ReferralsPage() {
         {/* How it works */}
         <div style={{
           marginTop: 20, padding: '14px 16px', borderRadius: 10,
-          background: 'rgba(129,140,248,0.06)',
-          border: '1px solid rgba(129,140,248,0.15)',
+          background: 'rgba(52,184,166,0.06)',
+          border: '1px solid rgba(52,184,166,0.15)',
         }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 8 }}>
-            <i className="fas fa-circle-info" style={{ marginRight: 6 }}></i>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#34b8a6', marginBottom: 8 }}>
+            <FaIcon className="fas fa-circle-info" style={{ marginRight: 6 }} />
             How referrals work
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -267,7 +260,7 @@ export default function ReferralsPage() {
               'Commission is credited to your balance',
             ].map((step, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12, color: '#9898b8' }}>
-                <span style={{ color: '#818cf8', fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span>
+                <span style={{ color: '#34b8a6', fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span>
                 {step}
               </div>
             ))}
@@ -279,7 +272,7 @@ export default function ReferralsPage() {
       <div
         className="ref-card"
         style={{
-          background: 'linear-gradient(145deg, rgba(20,20,36,0.95), rgba(12,12,22,0.98))',
+          background: '#13131f',
           border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: '4px 16px 16px 16px',
           overflow: 'hidden',
@@ -296,11 +289,11 @@ export default function ReferralsPage() {
 
         {!data?.referrals?.length ? (
           <div style={{ padding: '48px 20px', textAlign: 'center' }}>
-            <i className="fas fa-user-plus" style={{
+            <FaIcon className="fas fa-user-plus" style={{
               fontSize: 28, color: '#3a3a52',
               marginBottom: 12, display: 'block',
-            }}></i>
-            <div style={{ fontSize: 14, color: '#5a5a78', marginBottom: 4 }}>
+            }} />
+            <div style={{ fontSize: 14, color: '#6a6a88', marginBottom: 4 }}>
               No referrals yet
             </div>
             <div style={{ fontSize: 12, color: '#3a3a52' }}>
@@ -320,7 +313,7 @@ export default function ReferralsPage() {
                 {/* Avatar */}
                 <div style={{
                   width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-                  background: 'linear-gradient(135deg, #818cf8, #4f46e5)',
+                  background: '#34b8a6',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 13, fontWeight: 700, color: '#fff',
                 }}>
@@ -332,7 +325,7 @@ export default function ReferralsPage() {
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: '#f0f0fa' }}>
                     {ref.referee.firstName} {ref.referee.lastName}
                   </div>
-                  <div style={{ fontSize: 11.5, color: '#5a5a78' }}>
+                  <div style={{ fontSize: 11.5, color: '#6a6a88' }}>
                     Joined {new Date(ref.referee.createdAt).toLocaleDateString()}
                   </div>
                 </div>
@@ -341,13 +334,13 @@ export default function ReferralsPage() {
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <div style={{
                     fontSize: 13, fontWeight: 700,
-                    color: ref.isPaid ? '#22c55e' : '#eab308',
+                    color: ref.isPaid ? '#16c784' : '#eab308',
                   }}>
                     {ref.commissionEarned > 0
                       ? formatCurrency(ref.commissionEarned)
                       : 'Pending'}
                   </div>
-                  <div style={{ fontSize: 11, color: '#5a5a78' }}>
+                  <div style={{ fontSize: 11, color: '#6a6a88' }}>
                     {ref.commissionRate}% commission
                   </div>
                 </div>
@@ -355,9 +348,9 @@ export default function ReferralsPage() {
                 {/* Status */}
                 <span style={{
                   fontSize: 10.5, fontWeight: 700,
-                  color: ref.isPaid ? '#22c55e' : '#eab308',
-                  background: ref.isPaid ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)',
-                  border: `1px solid ${ref.isPaid ? 'rgba(34,197,94,0.3)' : 'rgba(234,179,8,0.3)'}`,
+                  color: ref.isPaid ? '#16c784' : '#eab308',
+                  background: ref.isPaid ? 'rgba(22,199,132,0.1)' : 'rgba(234,179,8,0.1)',
+                  border: `1px solid ${ref.isPaid ? 'rgba(22,199,132,0.3)' : 'rgba(234,179,8,0.3)'}`,
                   padding: '3px 9px', borderRadius: 100,
                   flexShrink: 0,
                 }}>
