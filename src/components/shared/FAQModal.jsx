@@ -201,6 +201,7 @@ export default function FAQModal({ open, onClose, onMouseEnter, onMouseLeave }) 
         {/* Accordion — this is the ONLY part that scrolls */}
         <div
           className="faq-scroll faq-scroll-body"
+          data-lenis-prevent
           style={{
             flex: '1 1 auto',
             minHeight: 0,

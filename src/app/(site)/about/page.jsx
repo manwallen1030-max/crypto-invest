@@ -47,6 +47,7 @@ export default function AboutPage() {
         title={`Investing in crypto, made clear`}
         subtitle={`${siteConfig.name} is built for people who want a straightforward way to put digital assets to work — with the terms, the risks and the numbers laid out in plain sight.`}
         breadcrumb={[{ label: 'Home', href: '/' }, { label: 'About Us' }]}
+        backgroundImage="/images/about-hero.jpg"
       />
 
       {/* Mission */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Navbar from '../components/layout/Navbar';
 import PageLoader from '../components/layout/PageLoader';
 import HeroSection from '../components/sections/HeroSection';
+import LiveMarketSection from '../components/sections/LiveMarketSection';
 import HowItWorks from '../components/sections/HowItWorks';
 import CryptoExplainer from '../components/sections/CryptoExplainer';
 import InvestmentPlans from '../components/sections/InvestmentPlans';
@@ -20,6 +21,7 @@ export default function Home() {
       <main style={{ background: '#0a0a0f' }}>
         <Navbar />
         <HeroSection />
+        <LiveMarketSection />
         <HowItWorks />
         <CryptoExplainer />
         <InvestmentPlans />

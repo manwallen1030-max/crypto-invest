@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import toast from 'react-hot-toast';
 
 // 4 small toasts, shown one after another.
 // delay = ms after page load. action = which chat the toast opens when clicked.
@@ -13,6 +14,10 @@ const TOASTS = [
 ];
 
 const TOAST_LIFETIME = 6000; // ms each toast stays on screen
+
+// Smartsupp keeps an invisible layer in the bottom-right corner, even with its own
+// bubble hidden. If that layer sits on top of our button the click never reaches it.
+const SMARTSUPP_LAYER = '#chat-application, [id*="smartsupp" i], [class*="smartsupp" i]';
 
 /* ------------------------------------------------------------------ */
 /*  Compact toast                                                      */
@@ -110,6 +115,9 @@ export default function ChatWidgets() {
   const rightRef = useRef(null);
   const stoppedRef = useRef(false);     // true once the user opens a chat
   const smartsuppFailed = useRef(false); // true if the script is missing/blocked
+  const chatBtnRef = useRef(null);
+  const clickThrough = useRef(new Set()); // Smartsupp layers we made click-through
+  const [chatOpened, setChatOpened] = useState(false);
 
   /* ---------- Load Smartsupp ---------- */
   useEffect(() => {
@@ -136,12 +144,51 @@ export default function ChatWidgets() {
     script.async = true;
     script.charset = 'utf-8';
     script.src = 'https://www.smartsuppchat.com/loader.js?';
+    script.onload = () => console.info('[ChatWidgets] Smartsupp loaded.');
     script.onerror = () => {
       smartsuppFailed.current = true;
       console.error('[ChatWidgets] Smartsupp script failed to load (ad blocker, network, or wrong key).');
     };
     document.head.appendChild(script);
   }, []);
+
+  /* ---------- Keep our button clickable ---------- */
+  // Find any Smartsupp layer that is covering the button and let clicks pass
+  // through it. Runs as Smartsupp adds its elements to the page.
+  const clearCoveringLayers = useCallback(() => {
+    const btn = chatBtnRef.current;
+    if (!btn) return;
+    const r = btn.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const stack = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    for (const el of stack) {
+      if (btn.contains(el)) break; // everything above our button comes before it in the list
+      const layer = el.closest?.(SMARTSUPP_LAYER) || (el.tagName === 'IFRAME' ? el : null);
+      if (layer) {
+        layer.style.pointerEvents = 'none';
+        clickThrough.current.add(layer);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chatOpened) return undefined;
+    let raf = 0;
+    const run = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(clearCoveringLayers);
+    };
+    const observer = new MutationObserver(run);
+    observer.observe(document.body, { childList: true });
+    const timers = [800, 2000, 4500, 9000].map((ms) => setTimeout(run, ms));
+    window.addEventListener('resize', run);
+    return () => {
+      observer.disconnect();
+      timers.forEach(clearTimeout);
+      window.removeEventListener('resize', run);
+      cancelAnimationFrame(raf);
+    };
+  }, [chatOpened, clearCoveringLayers]);
 
   /* ---------- Schedule the 4 toasts ---------- */
   useEffect(() => {
@@ -172,22 +219,29 @@ export default function ChatWidgets() {
     window.open(`https://wa.me/${number}?text=${message}`, '_blank', 'noopener,noreferrer');
   };
 
-  const openSmartsupp = () => {
-    stoppedRef.current = true;
-    console.log('[ChatWidgets] live chat clicked', {
-      hasKey: !!process.env.NEXT_PUBLIC_SMARTSUPP_KEY,
-      smartsuppReady: typeof window.smartsupp === 'function',
-      failed: smartsuppFailed.current,
-    });
+const openSmartsupp = () => {
+  stoppedRef.current = true;
+  setChatOpened(true); // hide our button on any click
+ 
+  const hasKey = !!process.env.NEXT_PUBLIC_SMARTSUPP_KEY;
+  const ready = hasKey && !smartsuppFailed.current && typeof window.smartsupp === 'function';
+  console.info('[ChatWidgets] live chat clicked', { hasKey, ready, failed: smartsuppFailed.current });
 
-    // If Smartsupp is not available, do something useful instead of nothing
-    if (smartsuppFailed.current || typeof window.smartsupp !== 'function') {
-      openWhatsApp();
-      return;
-    }
-    window.smartsupp('chat:open');
-  };
+  if (!ready) {
+    toast.error(
+      hasKey
+        ? 'Live chat is blocked or unavailable right now. Opening WhatsApp instead.'
+        : 'Live chat is not set up yet. Opening WhatsApp instead.'
+    );
+    openWhatsApp();
+    return;
+  }
 
+  clickThrough.current.forEach((el) => { el.style.pointerEvents = ''; });
+  clickThrough.current.clear();
+  window.smartsupp('chat:show');
+  window.smartsupp('chat:open');
+};
   const handleToastAction = (action) => {
     if (action === 'whatsapp') openWhatsApp();
     else openSmartsupp();
@@ -213,7 +267,7 @@ export default function ChatWidgets() {
   return (
     <>
       {/* LEFT: WhatsApp */}
-      <div ref={leftRef} className="chat-fab-left" style={{ position: 'fixed', bottom: 28, left: 24, zIndex: Z, opacity: 0 }}>
+      <div ref={leftRef} style={{ position: 'fixed', bottom: 28, left: 24, zIndex: Z, opacity: 0 }}>
         <button
           onClick={openWhatsApp}
           title="Chat on WhatsApp"
@@ -237,7 +291,6 @@ export default function ChatWidgets() {
       {/* RIGHT: toasts + live chat button */}
       <div
         ref={rightRef}
-        className="chat-fab-right"
         style={{
           position: 'fixed',
           bottom: 28,
@@ -257,9 +310,10 @@ export default function ChatWidgets() {
           ))}
         </div>
 
+        {!chatOpened && (
         <button
+          ref={chatBtnRef}
           onClick={openSmartsupp}
-          className="chat-fab-btn"
           title="Live Chat Support"
           aria-label="Open live chat"
           style={{
@@ -285,6 +339,7 @@ export default function ChatWidgets() {
             pointerEvents: 'none',
           }} />
         </button>
+        )}
       </div>
 
       <style>{`

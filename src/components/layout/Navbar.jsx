@@ -121,8 +121,9 @@ export default function Navbar() {
     if (!menu || !overlay) return;
 
     if (mobileOpen) {
-      // Lock body scroll
+      // Lock page scroll (Lenis too) while the drawer is open
       document.body.style.overflow = 'hidden';
+      window.__lenis?.stop();
 
       // Show overlay
       gsap.set(overlay, { pointerEvents: 'all' });
@@ -141,8 +142,9 @@ export default function Navbar() {
         { x: 0, opacity: 1, duration: 0.4, stagger: 0.04, ease: 'power2.out', delay: 0.18 }
       );
     } else {
-      // Unlock body scroll
+      // Unlock page scroll
       document.body.style.overflow = '';
+      window.__lenis?.start();
 
       // Hide overlay
       gsap.to(overlay, {
@@ -154,7 +156,7 @@ export default function Navbar() {
       gsap.to(menu, { x: '100%', duration: 0.4, ease: 'power3.in' });
     }
 
-    return () => { document.body.style.overflow = ''; };
+    return () => { document.body.style.overflow = ''; window.__lenis?.start(); };
   }, [mobileOpen]);
 
   const isLinkActive = (link) =>
@@ -176,7 +178,12 @@ export default function Navbar() {
     if (isHome && link.href.startsWith('/#')) {
       e.preventDefault();
       const target = document.querySelector(link.href.slice(1));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      if (target) {
+        // Lenis drives all scrolling, so glide with it (native smooth scroll
+        // would fight it). Offset leaves room for the fixed navbar.
+        if (window.__lenis) window.__lenis.scrollTo(target, { offset: -72, duration: 1.5 });
+        else target.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -480,6 +487,7 @@ export default function Navbar() {
       {/* ── MOBILE DRAWER ─────────────────────────────── */}
       <div
         ref={mobileMenuRef}
+        data-lenis-prevent
         style={{
           position: 'fixed',
           top: 0,
@@ -538,7 +546,7 @@ export default function Navbar() {
         </div>
 
         {/* Nav links — scrollable area */}
-        <div style={{
+        <div data-lenis-prevent style={{
           flex: 1,
           overflowY: 'auto',
           padding: '16px 16px 0',

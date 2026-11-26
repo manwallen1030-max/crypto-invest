@@ -73,12 +73,32 @@ body {
 }
 
 /* ── Lenis Smooth Scroll ────────────────────── */
-html.lenis {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 .lenis.lenis-smooth {
-  scroll-behavior: auto;
+  scroll-behavior: auto !important;
 }
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Back-to-top button (public site) */
+.back-to-top {
+  pointer-events: auto;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(16, 16, 26, 0.92);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  color: #c9a84c; cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.back-to-top:hover { background: #c9a84c; color: #0a0a0f; transform: translateY(-3px); }
 
 /* ── Selection Color ────────────────────────── */
 ::selection {

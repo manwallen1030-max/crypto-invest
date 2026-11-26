@@ -58,13 +58,6 @@ const bulletPoints = [
   'Advanced Portfolio Management.',
 ];
 
-// Investment rows shown in the portfolio card
-const investments = [
-  { plan: 'Starter Plan', amount: '$2,500',  profit: '+$125',   days: '30d', pct: 65, color: '#818cf8' },
-  { plan: 'Growth Plan',  amount: '$10,000', profit: '+$1,200', days: '60d', pct: 82, color: '#c9a84c' },
-  { plan: 'Elite Plan',   amount: '$12,350', profit: '+$2,470', days: '90d', pct: 40, color: '#22c55e' },
-];
-
 export default function HeroSection() {
   const sectionRef   = useRef(null);
   const tickerBarRef = useRef(null);
@@ -73,8 +66,12 @@ export default function HeroSection() {
   const headlineRef  = useRef(null);
   const bulletsRef   = useRef(null);
   const ctaRef       = useRef(null);
-  const visualRef    = useRef(null);
   const marqueeRef   = useRef(null);
+  const bgWrapRef    = useRef(null);
+  const bgFloatRef   = useRef(null);
+  const bgImgRef     = useRef(null);
+  const ambientRef   = useRef(null);
+  const copyRef      = useRef(null);
 
   // ── Ticker infinite scroll ─────────────────────────────────
   useEffect(() => {
@@ -143,45 +140,83 @@ export default function HeroSection() {
       '-=0.25'
     );
 
-    // Portfolio card scales and un-blurs into place rather than just sliding
-    tl.fromTo(visualRef.current,
-      { x: 70, opacity: 0, scale: 0.94, filter: 'blur(10px)' },
-      { x: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.05, ease: 'power3.out' },
-      '-=0.85'
+    // ── Cinematic background ───────────────────────────────────
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Slow settle-in: the image eases from slightly zoomed to rest
+    gsap.fromTo(bgImgRef.current,
+      { scale: 1.2, opacity: 0 },
+      { scale: 1.06, opacity: 1, duration: reduceMotion ? 0.01 : 2.4, ease: 'power3.out' }
+    );
+    gsap.fromTo(ambientRef.current,
+      { opacity: 0 },
+      { opacity: 0.5, duration: reduceMotion ? 0.01 : 2.2, ease: 'power2.out' }
     );
 
-    // Rows cascade in once the card has mostly landed
-    tl.fromTo(visualRef.current.querySelectorAll('.portfolio-row'),
-      { y: 16, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.09, ease: 'power2.out' },
-      '-=0.55'
-    );
+    if (!reduceMotion) {
+      // The rocket hovers gently
+      gsap.to(bgFloatRef.current, {
+        y: -14, duration: 4.5, ease: 'sine.inOut', repeat: -1, yoyo: true,
+      });
 
-    // Floating badges pop in last with a soft spring
-    tl.fromTo(visualRef.current.querySelectorAll('.floating-badge'),
-      { scale: 0.7, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.55, stagger: 0.1, ease: 'back.out(1.7)' },
-      '-=0.15'
-    );
+      // Parallax: the picture drifts slower than the page, the glow slower still
+      const scrollCfg = { trigger: sectionRef.current, start: 'top top', end: 'bottom top', scrub: 0.8 };
+      gsap.to(bgWrapRef.current,  { yPercent: 14, ease: 'none', scrollTrigger: scrollCfg });
+      gsap.to(ambientRef.current, { yPercent: 8,  ease: 'none', scrollTrigger: scrollCfg });
+      gsap.to(copyRef.current, {
+        y: -36, ease: 'none',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: '+=70%', scrub: 0.8 },
+      });
 
-    // Continuous gentle float on the visual, starting once it has settled
-    gsap.to(visualRef.current, {
-      y: -16,
-      duration: 3.5,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: 1.7,
-    });
+      // The "Scroll" cue fades out as soon as the visitor scrolls
+      gsap.to('.hero-scroll-cue', {
+        opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: '+=180', scrub: true },
+      });
+
+      // Mouse parallax (desktop pointers only)
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 900px) and (pointer: fine)', () => {
+        const xTo = gsap.quickTo(bgImgRef.current, 'x', { duration: 1.4, ease: 'power3' });
+        const yTo = gsap.quickTo(bgImgRef.current, 'y', { duration: 1.4, ease: 'power3' });
+        const onMove = (e) => {
+          xTo((e.clientX / window.innerWidth - 0.5) * -26);
+          yTo((e.clientY / window.innerHeight - 0.5) * -18);
+        };
+        window.addEventListener('pointermove', onMove, { passive: true });
+        return () => window.removeEventListener('pointermove', onMove);
+      });
+    }
 
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="home" style={{ background: '#0a0a0f', paddingTop: 80 }}>
+    <section ref={sectionRef} id="home" className="hero-root">
+
+      {/* ── Cinematic background image ────────────────────────── */}
+      <div className="hero-bg" aria-hidden="true">
+        <div ref={ambientRef} className="hero-bg-ambient" />
+        <div ref={bgWrapRef} className="hero-bg-wrap">
+          <div ref={bgFloatRef} className="hero-bg-float">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={bgImgRef}
+              className="hero-bg-img"
+              src="/images/hero-rocket.jpg"
+              alt=""
+              fetchPriority="high"
+              decoding="async"
+              draggable={false}
+            />
+          </div>
+        </div>
+        <div className="hero-bg-shade" />
+      </div>
 
       {/* ── Crypto Ticker Bar ─────────────────────────────────── */}
       <div
         ref={tickerBarRef}
+        className="hero-ticker"
         style={{
           background: 'rgba(16,16,26,0.95)',
           borderTop: '1px solid rgba(201,168,76,0.1)',
@@ -265,19 +300,10 @@ export default function HeroSection() {
       </div>
 
       {/* ── Hero Content ──────────────────────────────────────── */}
-      <div style={{
-        maxWidth: 1200,
-        margin: '0 auto',
-        padding: '80px 24px 100px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 60,
-        flexWrap: 'wrap',
-      }}>
+      <div className="hero-grid">
 
         {/* Left — Text content */}
-        <div style={{ flex: '1 1 480px', maxWidth: 580 }}>
+        <div ref={copyRef} className="hero-copy">
 
           {/* Badge */}
           <div ref={badgeRef} style={{ opacity: 0, marginBottom: 28 }}>
@@ -466,316 +492,158 @@ export default function HeroSection() {
 
         </div>
 
-        {/* Right — Visual */}
-        <div ref={visualRef} className="hero-visual">
-
-          {/* Outer glow ring */}
-          <div className="hero-visual-glow" />
-
-          {/* Decorative corner shapes */}
-          <div className="hero-visual-corner hero-visual-corner--tr" />
-          <div className="hero-visual-corner hero-visual-corner--bl" />
-
-          {/* Frame = the gold "border", Card = the dark content, both chamfered so the
-              cut edges get a real visible border instead of a bare clipped background. */}
-          <div className="portfolio-frame">
-            <div className="portfolio-card">
-
-              {/* Top shimmer line */}
-              <div className="portfolio-shimmer" />
-
-              {/* Diagonal watermark */}
-              <div className="portfolio-watermark">VX</div>
-
-              {/* Card header */}
-              <div className="portfolio-header">
-                <div>
-                  <div className="portfolio-label">Active Portfolio</div>
-                  <div className="portfolio-total">$24,850.00</div>
-                </div>
-                <div className="portfolio-change-wrap">
-                  <div className="portfolio-change">↑ +18.5%</div>
-                  <div className="portfolio-change-sub">vs last month</div>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="portfolio-divider" />
-
-              {/* Investment rows */}
-              {investments.map((inv, i) => (
-                <div key={i} className="portfolio-row" style={{ marginBottom: i < investments.length - 1 ? 14 : 0, opacity: 0 }}>
-                  <div className="portfolio-row-top">
-                    <div className="portfolio-row-left">
-                      <div className="portfolio-dot" style={{ background: inv.color, boxShadow: `0 0 8px ${inv.color}88` }} />
-                      <div>
-                        <div className="portfolio-plan">{inv.plan}</div>
-                        <div className="portfolio-meta">{inv.amount} · {inv.days} plan</div>
-                      </div>
-                    </div>
-                    <span className="portfolio-profit">{inv.profit}</span>
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="portfolio-progress-track">
-                    <div
-                      className="portfolio-progress-fill"
-                      style={{
-                        width: `${inv.pct}%`,
-                        background: `linear-gradient(90deg, ${inv.color}88, ${inv.color})`,
-                        boxShadow: `0 0 6px ${inv.color}66`,
-                      }}
-                    />
-                  </div>
-
-                  <div className="portfolio-progress-label">
-                    <span>Progress</span>
-                    <span style={{ color: inv.color, fontWeight: 600 }}>{inv.pct}%</span>
-                  </div>
-                </div>
-              ))}
-
-              {/* Bottom total */}
-              <div className="portfolio-footer">
-                <div className="portfolio-footer-left">
-                  <i className="fas fa-trophy" style={{ color: '#c9a84c', fontSize: 13 }}></i>
-                  <span>Total Profit Earned</span>
-                </div>
-                <span className="portfolio-footer-total">+$3,795.00</span>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Floating badge — top right */}
-          <div className="floating-badge floating-badge--secure" style={{ opacity: 0 }}>
-            <i className="fas fa-shield-alt" style={{ color: '#0a0a0f', fontSize: 13 }}></i>
-            <span>100% Secure</span>
-          </div>
-
-          {/* Floating badge — bottom left */}
-          <div className="floating-badge floating-badge--investors" style={{ opacity: 0 }}>
-            <div className="floating-badge-pulse" />
-            <span>12,400+ Active Investors</span>
-          </div>
-
-        </div>
       </div>
 
-      {/* Keyframe + responsive rules for the portfolio card */}
+      {/* Scroll cue — glides to the next section */}
+      <button
+        type="button"
+        className="hero-scroll-cue"
+        aria-label="Scroll to explore"
+        onClick={() => {
+          const target = document.getElementById('live-market');
+          if (!target) return;
+          if (window.__lenis) window.__lenis.scrollTo(target, { offset: -72, duration: 1.6 });
+          else target.scrollIntoView({ behavior: 'smooth' });
+        }}
+      >
+        Scroll
+        <span className="hero-scroll-line" />
+      </button>
+
+      {/* Hero styles */}
       <style>{`
         @keyframes pulseGreen {
           0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
           50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
         }
 
-        .hero-visual {
-          flex: 1 1 340px;
-          max-width: 460px;
-          width: 100%;
-          opacity: 0;
-          position: relative;
-          padding: 20px 20px 20px 0;
-          margin: 0 auto;
-        }
-
-        .hero-visual-glow {
-          position: absolute;
-          top: 50%; left: 50%;
-          transform: translate(-50%, -50%);
-          width: 420px;
-          height: 420px;
-          max-width: 90%;
-          aspect-ratio: 1 / 1;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .hero-visual-corner {
-          position: absolute;
-          width: 60px;
-          height: 60px;
-          pointer-events: none;
-        }
-        .hero-visual-corner--tr {
-          top: 10px; right: 10px;
-          border-top: 2px solid rgba(201,168,76,0.3);
-          border-right: 2px solid rgba(201,168,76,0.3);
-          border-radius: 0 12px 0 0;
-        }
-        .hero-visual-corner--bl {
-          bottom: 10px; left: 10px;
-          border-bottom: 2px solid rgba(201,168,76,0.3);
-          border-left: 2px solid rgba(201,168,76,0.3);
-          border-radius: 0 0 0 12px;
-        }
-
-        /* ── Chamfered frame + card ──────────────────────────────
-           Both layers share the same clip-path shape (small chamfer on
-           three corners, a bigger brand chamfer bottom-left). The frame
-           is 1.5px larger all round and painted with the gold gradient,
-           so the "border" actually shows up along the cut edges instead
-           of stopping dead at the diagonal like a plain clip-path does. */
-        .portfolio-frame {
-          position: relative;
-          padding: 1.5px;
-          background: linear-gradient(160deg, rgba(201,168,76,0.55), rgba(201,168,76,0.08) 40%, rgba(201,168,76,0.35));
-          clip-path: polygon(
-            16px 0, calc(100% - 16px) 0, 100% 16px,
-            100% calc(100% - 16px), calc(100% - 16px) 100%,
-            56px 100%, 0 calc(100% - 56px), 0 16px
-          );
-          filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55)) drop-shadow(0 0 30px rgba(201,168,76,0.06));
-        }
-
-        .portfolio-card {
+        /* ── Hero background + layout ──────────────────────────── */
+        .hero-root {
           position: relative;
           overflow: hidden;
-          background: linear-gradient(160deg, rgba(30,30,52,0.97) 0%, rgba(16,16,26,0.99) 100%);
-          padding: clamp(22px, 5vw, 32px) clamp(18px, 4vw, 28px);
-          clip-path: polygon(
-            15px 0, calc(100% - 15px) 0, 100% 15px,
-            100% calc(100% - 15px), calc(100% - 15px) 100%,
-            55px 100%, 0 calc(100% - 55px), 0 15px
-          );
+          background: #0a0a0f;
+          padding-top: 80px;
+        }
+        .hero-ticker { position: relative; z-index: 2; }
+
+        .hero-bg {
+          position: absolute; inset: 0; z-index: 0;
+          pointer-events: none; overflow: hidden;
+        }
+        .hero-bg-ambient {
+          position: absolute; top: 0; left: -6%; right: -6%;
+          /* only the first screen: everything below is the normal dark page */
+          height: calc(100svh + 120px);
+          background: url('/images/hero-rocket-blur.webp') center / cover no-repeat;
+          filter: saturate(1.2) brightness(0.8);
+          opacity: 0;
+          will-change: transform;
+          /* keep the left (text) side pure dark; glow only lives on the right */
+          -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000 75%), linear-gradient(180deg, #000 55%, transparent 100%);
+                  mask-image: linear-gradient(90deg, transparent 30%, #000 75%), linear-gradient(180deg, #000 55%, transparent 100%);
+          -webkit-mask-composite: source-in;
+                  mask-composite: intersect;
+        }
+        .hero-bg-wrap {
+          position: absolute; top: 96px; right: 0;
+          width: min(60vw, 780px);
+          height: calc(100svh - 96px + 120px);
+          overflow: hidden;
+          will-change: transform;
+          /* The picture dissolves into the page: transparent on its left edge
+             and at the bottom, so there is never a visible seam. */
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%), linear-gradient(180deg, #000 70%, transparent 100%);
+                  mask-image: linear-gradient(90deg, transparent 0%, #000 38%), linear-gradient(180deg, #000 70%, transparent 100%);
+          -webkit-mask-composite: source-in;
+                  mask-composite: intersect;
+        }
+        .hero-bg-wrap::after {
+          content: ''; position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(180deg, rgba(10,10,15,0.5) 0%, rgba(10,10,15,0) 14%);
+        }
+        .hero-bg-float { position: absolute; inset: -3%; }
+        .hero-bg-img {
+          display: block; width: 100%; height: 100%;
+          object-fit: cover; object-position: 50% 12%;
+          will-change: transform;
+        }
+        .hero-bg-shade {
+          position: absolute; inset: 0;
+          background:
+            linear-gradient(90deg, #0a0a0f 0%, rgba(10,10,15,0.6) 40%, rgba(10,10,15,0) 70%),
+            linear-gradient(180deg, rgba(10,10,15,0) 70%, #0a0a0f 100%);
         }
 
-        .portfolio-shimmer {
-          position: absolute; top: 0; left: 0; right: 0; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(201,168,76,0.7), transparent);
+        .hero-grid {
+          position: relative; z-index: 2;
+          max-width: 1200px; margin: 0 auto;
+          padding: 0 24px 40px;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .hero-copy {
+          grid-column: 1; grid-row: 1;
+          max-width: 580px;
+          min-height: calc(100svh - 130px);
+          display: flex; flex-direction: column; justify-content: center;
+          padding: 56px 0 72px;
+          will-change: transform;
+        }
+        .hero-scroll-cue {
+          position: absolute; z-index: 3;
+          left: 50%; top: calc(100svh - 76px);
+          transform: translateX(-50%);
+          display: flex; flex-direction: column; align-items: center; gap: 8px;
+          background: none; border: none; cursor: pointer;
+          color: #9898b8; font-size: 10.5px; font-weight: 600;
+          letter-spacing: 0.24em; text-transform: uppercase;
+          transition: color .25s ease;
+        }
+        .hero-scroll-cue:hover { color: #c9a84c; }
+        .hero-scroll-line {
+          position: relative; display: block; overflow: hidden;
+          width: 1px; height: 36px; background: rgba(201,168,76,0.25);
+        }
+        .hero-scroll-line::after {
+          content: ''; position: absolute; left: 0; top: -100%;
+          width: 100%; height: 100%; background: #c9a84c;
+          animation: heroScrollCue 1.9s ease-in-out infinite;
+        }
+        @keyframes heroScrollCue {
+          0%   { top: -100%; }
+          60%  { top: 100%; }
+          100% { top: 100%; }
         }
 
-        .portfolio-watermark {
-          position: absolute;
-          bottom: -20px; right: -14px;
-          font-size: clamp(64px, 12vw, 100px);
-          font-weight: 900;
-          color: rgba(201,168,76,0.03);
-          letter-spacing: -0.05em;
-          pointer-events: none;
-          user-select: none;
-          line-height: 1;
+        /* Tablet + phone: picture across the top, text and card below it */
+        @media (max-width: 899px) {
+          .hero-bg-wrap {
+            top: 0; left: 0; right: 0; margin: 0 auto;
+            width: min(100%, 520px); height: 640px; bottom: auto;
+            -webkit-mask-image: none; mask-image: none;
+          }
+          .hero-bg-wrap::after {
+            background: linear-gradient(180deg, rgba(10,10,15,0.55) 0, rgba(10,10,15,0) 140px, rgba(10,10,15,0) 250px, rgba(10,10,15,0.85) 470px, #0a0a0f 640px);
+          }
+          .hero-bg-shade { display: none; }
+          .hero-bg-ambient { display: none; }
+          .hero-grid { display: flex; flex-direction: column; padding: 0 20px 40px; }
+          .hero-copy {
+            min-height: 0; max-width: none;
+            padding: calc(min(100vw, 520px) * 0.977 - 85px) 0 40px;
+          }
+          .hero-scroll-cue { display: none; }
         }
-
-        .portfolio-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 24px;
-        }
-        .portfolio-label {
-          font-size: 11px; color: #5a5a78; margin-bottom: 6px;
-          letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
-        }
-        .portfolio-total {
-          font-size: clamp(24px, 5vw, 30px); font-weight: 800; color: #f0f0fa; letter-spacing: -0.02em;
-        }
-        .portfolio-change-wrap {
-          display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0;
-        }
-        .portfolio-change {
-          padding: 5px 12px; border-radius: 20px;
-          background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
-          font-size: 12px; font-weight: 700; color: #22c55e; white-space: nowrap;
-        }
-        .portfolio-change-sub { font-size: 11px; color: #5a5a78; }
-
-        .portfolio-divider {
-          height: 1px;
-          background: linear-gradient(90deg, rgba(201,168,76,0.15), transparent);
-          margin-bottom: 20px;
-        }
-
-        .portfolio-row {
-          padding: 14px 16px;
-          border-radius: 14px;
-          background: rgba(255,255,255,0.025);
-          border: 1px solid rgba(255,255,255,0.05);
-          transition: all 0.2s ease;
-        }
-        .portfolio-row:hover {
-          background: rgba(201,168,76,0.05);
-          border-color: rgba(201,168,76,0.15);
-        }
-        .portfolio-row-top {
-          display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px;
-        }
-        .portfolio-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-        .portfolio-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .portfolio-plan { font-size: 13px; font-weight: 600; color: #e8e8f0; margin-bottom: 2px; }
-        .portfolio-meta { font-size: 11px; color: #5a5a78; white-space: nowrap; }
-        .portfolio-profit { font-size: 13px; font-weight: 700; color: #22c55e; flex-shrink: 0; }
-
-        .portfolio-progress-track { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
-        .portfolio-progress-fill { height: 100%; border-radius: 2px; }
-        .portfolio-progress-label { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: #5a5a78; }
-
-        .portfolio-footer {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.04); gap: 12px;
-        }
-        .portfolio-footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5a5a78; }
-        .portfolio-footer-total {
-          font-size: 16px; font-weight: 800;
-          background: linear-gradient(135deg, #c9a84c, #e8c96a);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-          white-space: nowrap;
-        }
-
-        .floating-badge {
-          position: absolute;
-          display: flex; align-items: center; gap: 8px;
-          padding: 10px 16px;
-          font-size: 12px; font-weight: 700;
-          z-index: 2;
-        }
-        .floating-badge--secure {
-          top: 0; right: -8px;
-          background: linear-gradient(135deg, #c9a84c, #a8722a);
-          border-radius: 14px 14px 14px 4px;
-          box-shadow: 0 8px 28px rgba(201,168,76,0.4);
-          color: #0a0a0f;
-        }
-        .floating-badge--investors {
-          bottom: 0; left: -8px;
-          background: rgba(10,10,15,0.98);
-          border: 1px solid rgba(34,197,94,0.3);
-          border-radius: 4px 14px 14px 14px;
-          box-shadow: 0 8px 28px rgba(0,0,0,0.5);
-          color: #22c55e;
-          font-weight: 600;
-        }
-        .floating-badge-pulse {
-          width: 8px; height: 8px; border-radius: 50%;
-          background: #22c55e; box-shadow: 0 0 10px #22c55e;
-          animation: pulseGreen 2s ease-in-out infinite;
-          flex-shrink: 0;
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 768px) {
-          .hero-visual {
-            max-width: 420px;
-            padding: 30px 8px 8px;
+        @media (min-width: 521px) and (max-width: 899px) {
+          .hero-bg-wrap {
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+                    mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
           }
         }
-
-        @media (max-width: 480px) {
-          .hero-visual { padding: 24px 4px 4px; }
-          .floating-badge { padding: 8px 12px; font-size: 11px; }
-          .floating-badge--secure { right: 4px; top: -6px; }
-          .floating-badge--investors { left: 4px; bottom: -6px; }
-          .portfolio-frame,
-          .portfolio-card {
-            clip-path: polygon(
-              12px 0, calc(100% - 12px) 0, 100% 12px,
-              100% calc(100% - 12px), calc(100% - 12px) 100%,
-              40px 100%, 0 calc(100% - 40px), 0 12px
-            );
-          }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-scroll-line::after { animation: none; }
         }
+
       `}</style>
 
     </section>

@@ -225,6 +225,7 @@ export default function DashboardSidebar({ user, isOpen, onClose }) {
       <aside
         ref={asideRef}
         className="dashboard-sidebar"
+        data-lenis-prevent
         aria-label="Main menu"
         aria-hidden={!isOpen}
         style={{

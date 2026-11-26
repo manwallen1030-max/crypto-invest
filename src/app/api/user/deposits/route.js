@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import prisma from '@/lib/prismakey';
 import { getUserFromRequest } from '@/lib/auth';
+import { uploadToCloudinary, deleteFromCloudinary, describeUploadError } from '@/lib/cloudinary';
 
 export const runtime = 'nodejs';
 
 const MAX_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'deposits');
+const ALLOWED_FORMATS = 'jpg,jpeg,png,webp,pdf';
 
 export async function GET(request) {
   const session = getUserFromRequest(request);
@@ -66,23 +65,38 @@ export async function POST(request) {
     return NextResponse.json({ errors }, { status: 400 });
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
-  const ext = proof.type === 'application/pdf' ? 'pdf' : proof.type.split('/')[1];
-  const filename = `${session.id}-${Date.now()}.${ext}`;
-  await writeFile(path.join(UPLOAD_DIR, filename), Buffer.from(await proof.arrayBuffer()));
-  const proofImageUrl = `/uploads/deposits/${filename}`;
+  // Proof of payment is stored on Cloudinary; the database keeps its URL.
+  let proofImageUrl;
+  try {
+    ({ url: proofImageUrl } = await uploadToCloudinary(proof, {
+      folder: 'deposits',
+      name: session.id,
+      allowedFormats: ALLOWED_FORMATS,
+    }));
+  } catch (err) {
+    const { status, message } = describeUploadError(err);
+    return NextResponse.json({ error: message }, { status });
+  }
 
-  const deposit = await prisma.deposit.create({
-    data: {
-      userId: session.id,
-      amount,
-      method,
-      walletAddressId: walletAddressId || null,
-      txHash: txHash || null,
-      proofImageUrl,
-      status: 'PENDING',
-    },
-  });
+  let deposit;
+  try {
+    deposit = await prisma.deposit.create({
+      data: {
+        userId: session.id,
+        amount,
+        method,
+        walletAddressId: walletAddressId || null,
+        txHash: txHash || null,
+        proofImageUrl,
+        status: 'PENDING',
+      },
+    });
+  } catch (err) {
+    // The deposit wasn't saved, so don't leave the uploaded proof behind.
+    console.error('Deposit save failed:', err);
+    await deleteFromCloudinary(proofImageUrl);
+    return NextResponse.json({ error: 'Could not save your deposit. Please try again.' }, { status: 500 });
+  }
 
   // Record of the submission. It is saved as already read, because the user
   // just did this themselves: the Deposit History badge counts only updates

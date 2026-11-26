@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -9,8 +10,14 @@ gsap.registerPlugin(useGSAP);
 
 // Reusable header for inner pages: breadcrumb, icon, title, subtitle and an
 // optional meta pill (e.g. "Last updated …").
-export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = [], meta, children }) {
+//
+// Pass backgroundImage (a path under /public, e.g. "/images/about-hero.jpg") to
+// turn the header into a photo hero: the picture sits behind a dark overlay so
+// the text stays readable. Pages that don't pass it look exactly as before.
+export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = [], meta, backgroundImage, backgroundPosition = 'center', children }) {
   const ref = useRef(null);
+  const bgRef = useRef(null);
+  const hasPhoto = !!backgroundImage;
 
   useGSAP(() => {
     gsap.fromTo(
@@ -18,6 +25,11 @@ export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = 
       { y: 24, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.7, stagger: 0.09, ease: 'power3.out', delay: 0.1 }
     );
+
+    // The photo settles in with a slow zoom-out (skipped for reduced motion).
+    if (bgRef.current && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      gsap.fromTo(bgRef.current, { scale: 1.12 }, { scale: 1, duration: 2.8, ease: 'power2.out' });
+    }
   }, { scope: ref });
 
   return (
@@ -26,11 +38,31 @@ export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = 
       style={{
         position: 'relative',
         overflow: 'hidden',
-        padding: '150px 24px 64px',
+        padding: hasPhoto ? 'clamp(150px, 22vw, 210px) 24px clamp(90px, 12vw, 130px)' : '150px 24px 64px',
         background: '#0a0a0f',
         borderBottom: '1px solid rgba(201,168,76,0.08)',
       }}
     >
+      {hasPhoto && (
+        <>
+          <div ref={bgRef} aria-hidden="true" style={{ position: 'absolute', inset: 0, transformOrigin: 'center', willChange: 'transform' }}>
+            <Image
+              src={backgroundImage}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectFit: 'cover', objectPosition: backgroundPosition }}
+            />
+          </div>
+          {/* Dark overlay: keeps the white text readable and fades into the page below */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, rgba(10,10,15,0.72) 0%, rgba(10,10,15,0.5) 45%, rgba(10,10,15,0.92) 100%)',
+          }} />
+        </>
+      )}
+
       <div style={{
         position: 'absolute', top: -180, left: '50%', transform: 'translateX(-50%)',
         width: 900, height: 520, borderRadius: '50%',
@@ -45,7 +77,7 @@ export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = 
             className="hero-item"
             style={{
               opacity: 0, display: 'flex', justifyContent: 'center', alignItems: 'center',
-              gap: 8, fontSize: 12.5, color: '#5a5a78', marginBottom: 28, flexWrap: 'wrap',
+              gap: 8, fontSize: 12.5, color: hasPhoto ? '#b4b4cc' : '#5a5a78', marginBottom: 28, flexWrap: 'wrap',
             }}
           >
             {breadcrumb.map((crumb, i) => (
@@ -86,14 +118,16 @@ export default function PageHero({ eyebrow, title, subtitle, icon, breadcrumb = 
           letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: 18,
           background: 'linear-gradient(135deg, #f0f0fa 0%, #c9a84c 85%)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          filter: hasPhoto ? 'drop-shadow(0 2px 16px rgba(0,0,0,0.55))' : undefined,
         }}>
           {title}
         </h1>
 
         {subtitle && (
           <p className="hero-item" style={{
-            opacity: 0, fontSize: 16.5, color: '#8888a8', lineHeight: 1.75,
+            opacity: 0, fontSize: 16.5, color: hasPhoto ? '#d0d0e2' : '#8888a8', lineHeight: 1.75,
             maxWidth: 640, margin: '0 auto',
+            textShadow: hasPhoto ? '0 1px 12px rgba(0,0,0,0.7)' : undefined,
           }}>
             {subtitle}
           </p>

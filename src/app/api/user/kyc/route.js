@@ -1,30 +1,20 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import prisma from '@/lib/prismakey';
 import { getUserFromRequest } from '@/lib/auth';
+import { uploadToCloudinary, deleteFromCloudinary, describeUploadError } from '@/lib/cloudinary';
 
-// Touches the filesystem, so this needs the Node runtime (not Edge).
+// Uploads go to Cloudinary over the network; keep this on the Node runtime.
 export const runtime = 'nodejs';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB — ID photos are often larger than avatars
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'kyc');
+const ALLOWED_FORMATS = 'jpg,jpeg,png,webp,pdf';
 
-// See the same note on src/app/api/user/avatar/route.js — this saves to the
-// local filesystem, which is fine for local dev / learning but won't
-// persist on serverless hosts. For real KYC documents specifically, you'd
-// also want private object storage (not public/) since these are sensitive
-// — this local setup is for learning the flow, not a production pattern.
-
-async function saveFile(file, userId, label) {
-  const ext = file.type === 'application/pdf' ? 'pdf' : file.type.split('/')[1];
-  const filename = `${userId}-${label}-${Date.now()}.${ext}`;
-  const filepath = path.join(UPLOAD_DIR, filename);
-  const bytes = Buffer.from(await file.arrayBuffer());
-  await writeFile(filepath, bytes);
-  return `/uploads/kyc/${filename}`;
-}
+// Documents are stored on Cloudinary (see src/lib/cloudinary.js) and the
+// database keeps each URL. Every file gets a random, unguessable name.
+// Note: these are sensitive ID documents. If you want them fully private
+// (only viewable through short-lived signed links), Cloudinary supports
+// "authenticated" delivery; ask for that as a follow-up.
 
 export async function GET(request) {
   const session = getUserFromRequest(request);
@@ -105,24 +95,51 @@ export async function POST(request) {
     return NextResponse.json({ errors }, { status: 400 });
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
+  // Upload all documents together. If any one fails, remove the ones that
+  // did succeed so no half-finished submission is left on Cloudinary.
+  const hasBack = docBack && typeof docBack !== 'string';
+  const toUpload = [
+    ['front', docFront],
+    ['back', hasBack ? docBack : null],
+    ['selfie', selfie],
+  ];
 
-  const docFrontUrl = await saveFile(docFront, session.id, 'front');
-  const docBackUrl  = (docBack && typeof docBack !== 'string')
-    ? await saveFile(docBack, session.id, 'back')
-    : null;
-  const selfieUrl   = await saveFile(selfie, session.id, 'selfie');
+  const results = await Promise.allSettled(
+    toUpload.map(([label, file]) =>
+      file
+        ? uploadToCloudinary(file, { folder: 'kyc', name: `${session.id}-${label}`, allowedFormats: ALLOWED_FORMATS })
+        : Promise.resolve(null)
+    )
+  );
 
-  const submission = await prisma.kycSubmission.create({
-    data: {
-      userId: session.id,
-      docType,
-      docFrontUrl,
-      docBackUrl,
-      selfieUrl,
-      status: 'PENDING',
-    },
-  });
+  const failed = results.find((r) => r.status === 'rejected');
+  if (failed) {
+    await Promise.all(
+      results.filter((r) => r.status === 'fulfilled' && r.value).map((r) => deleteFromCloudinary(r.value.url))
+    );
+    const { status, message } = describeUploadError(failed.reason);
+    return NextResponse.json({ error: message }, { status });
+  }
+
+  const [docFrontUrl, docBackUrl, selfieUrl] = results.map((r) => r.value?.url ?? null);
+
+  let submission;
+  try {
+    submission = await prisma.kycSubmission.create({
+      data: {
+        userId: session.id,
+        docType,
+        docFrontUrl,
+        docBackUrl,
+        selfieUrl,
+        status: 'PENDING',
+      },
+    });
+  } catch (err) {
+    console.error('KYC save failed:', err);
+    await Promise.all([docFrontUrl, docBackUrl, selfieUrl].filter(Boolean).map(deleteFromCloudinary));
+    return NextResponse.json({ error: 'Could not save your documents. Please try again.' }, { status: 500 });
+  }
 
   await prisma.user.update({
     where: { id: session.id },

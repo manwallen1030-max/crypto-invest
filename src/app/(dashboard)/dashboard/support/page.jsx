@@ -280,7 +280,7 @@ function TicketDetail({ ticketId, onBack }) {
         </div>
 
         {/* Thread */}
-        <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 16, maxHeight: 420, overflowY: 'auto' }}>
+        <div data-lenis-prevent style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 16, maxHeight: 420, overflowY: 'auto' }}>
           {ticket.replies.map((r) => (
             <div key={r.id} style={{
               display: 'flex', gap: 10,
