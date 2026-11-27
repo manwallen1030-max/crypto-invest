@@ -1,4 +1,4 @@
-import prisma from '@/lib/prismakey';
+import prisma from '../../../lib/prismakey';
 
 export async function GET() {
   try {
